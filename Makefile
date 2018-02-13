@@ -6,3 +6,7 @@ build:
 test:
 	./mvnw test
 
+.PHONY: clean
+clean:
+	./mvnw clean
+
