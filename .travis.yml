@@ -2,8 +2,8 @@ language: java
 sudo: false
 jdk:
   - openjdk8
-script:
-  - bash ./deploy.sh
+#script:
+#  - bash ./bin/deploy.sh
 cache:
   directories:
   - $HOME/.m2
