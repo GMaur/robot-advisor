@@ -52,14 +52,8 @@ class RobotAdvisorAppTest {
 
     private fun balance(idealDistribution: Portfolio, currentDistribution: Portfolio): Pair<Response, Result<String, FuelError>> {
         val request = RebalanceRequest(ideal = idealDistribution, current = currentDistribution)
-        val requestparameters = listOf(
-                "request" to request)
-        val parameters = listOf(
-                "ideal" to idealDistribution,
-                "current" to currentDistribution)
-        val httpPost = "/rebalance/".httpPost(parameters).body(serialize(request)!!, Charsets.UTF_8).header("Content-Type" to "application/json")
+        val httpPost = "/rebalance/".httpPost().body(serialize(request)!!, Charsets.UTF_8).header("Content-Type" to "application/json")
         val (_, response, result) = httpPost.responseString()
-//        TODO()
         return Pair(response, result)
     }
 
