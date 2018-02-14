@@ -39,7 +39,12 @@
 			<artifactId>kotlin-reflect</artifactId>
 		</dependency>
 
-		<dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
@@ -49,6 +54,29 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <version>2.0.2-beta</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <!--for json serialization-->
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-kotlin</artifactId>
+            <version>2.9.0</version>
+        </dependency>
+
+        <dependency>
+            <!--rest client-->
+            <groupId>com.github.kittinunf.fuel</groupId>
+            <artifactId>fuel</artifactId>
+            <version>1.12.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <!--rest client-->
+            <groupId>com.github.kittinunf.fuel</groupId>
+            <artifactId>fuel-jackson</artifactId>
+            <version>1.12.1</version>
             <scope>test</scope>
         </dependency>
 
@@ -103,7 +131,12 @@
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
-		</repository>
+        </repository>
+        <repository>
+            <name>jcenter</name>
+            <id>jcenter</id>
+            <url>https://jcenter.bintray.com/</url>
+        </repository>
 	</repositories>
 
 	<pluginRepositories>
