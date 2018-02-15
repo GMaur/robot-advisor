@@ -13,8 +13,6 @@ import com.gmaur.investment.robotadvisor.domain.PortfolioRebalancer
 import com.gmaur.investment.robotadvisor.infrastructure.FileAssetAllocationRepository
 import com.gmaur.investment.robotadvisor.infrastructure.FilePortfolioRepository
 import com.gmaur.investment.robotadvisor.infrastructure.RebalanceRequest
-import org.assertj.core.api.Assertions
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
@@ -64,20 +62,6 @@ class RobotAdvisorAppShould {
 
     private val idealRepo: FileAssetAllocationRepository = FileAssetAllocationRepository()
     private val currentRepo: FilePortfolioRepository = FilePortfolioRepository()
-
-
-    @Ignore
-    @Test
-    fun `balances a portfolio comparing to the ideal distribution`() {
-        val idealPortfolio = idealRepo.read()
-        val currentPortfolio = currentRepo.read()
-
-        val (response, result) = balancePortfolio(idealPortfolio, currentPortfolio)
-
-        Assertions.assertThat(deserialize(result.get())).isEqualTo(Operations(listOf()))
-        Assertions.assertThat(response.statusCode).isEqualTo(200)
-    }
-
 
     @Test
     fun `handle incorrectly requests`() {
