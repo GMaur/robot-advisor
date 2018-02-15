@@ -9,6 +9,8 @@ import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
 import com.gmaur.investment.robotadvisor.domain.Operations
 import com.gmaur.investment.robotadvisor.domain.Portfolio
+import com.gmaur.investment.robotadvisor.infrastructure.AssetAllocation
+import com.gmaur.investment.robotadvisor.infrastructure.FileAssetAllocationRepository
 import com.gmaur.investment.robotadvisor.infrastructure.FilePortfolioRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
@@ -26,7 +28,7 @@ class RobotAdvisorAppTest {
     @LocalServerPort
     var port: Int? = null
 
-    private val idealRepo: FilePortfolioRepository = FilePortfolioRepository()
+    private val idealRepo: FileAssetAllocationRepository = FileAssetAllocationRepository()
     private val currentRepo: FilePortfolioRepository = FilePortfolioRepository()
     private val objectMapper: ObjectMapper
 
@@ -54,7 +56,7 @@ class RobotAdvisorAppTest {
         return objectMapper.readValue<Operations>(get, Operations::class.java)
     }
 
-    private fun balancePortfolio(idealDistribution: Portfolio, currentDistribution: Portfolio): Pair<Response, Result<String, FuelError>> {
+    private fun balancePortfolio(idealDistribution: AssetAllocation, currentDistribution: Portfolio): Pair<Response, Result<String, FuelError>> {
         val request = RebalanceRequest(ideal = idealDistribution, current = currentDistribution)
         val httpPost = "/rebalance/".httpPost().body(serialize(request)!!, Charsets.UTF_8).header("Content-Type" to "application/json")
         val (_, response, result) = httpPost.responseString()
