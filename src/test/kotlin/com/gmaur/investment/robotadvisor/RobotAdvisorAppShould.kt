@@ -86,12 +86,13 @@ class RobotAdvisorAppShould {
         val currentPortfolio = currentRepo.read()
 
         val request = RebalanceRequest(ideal = idealPortfolio, current = currentPortfolio)
-        
+
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/rebalance")
                 .content(serialize(request))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError)
+        //TODO test that the error is a 400 - Bad request
 
         verifyZeroInteractions(portfolioRebalancer)
     }
