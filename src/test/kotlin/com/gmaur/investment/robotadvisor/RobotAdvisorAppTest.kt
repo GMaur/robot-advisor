@@ -12,6 +12,7 @@ import com.gmaur.investment.robotadvisor.domain.Operations
 import com.gmaur.investment.robotadvisor.domain.Portfolio
 import com.gmaur.investment.robotadvisor.infrastructure.FileAssetAllocationRepository
 import com.gmaur.investment.robotadvisor.infrastructure.FilePortfolioRepository
+import com.gmaur.investment.robotadvisor.infrastructure.RebalanceRequest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
