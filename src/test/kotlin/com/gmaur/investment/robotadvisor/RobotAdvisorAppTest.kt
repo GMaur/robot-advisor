@@ -46,10 +46,10 @@ class RobotAdvisorAppTest {
 
     @Test
     fun `balances a portfolio comparing to the ideal distribution`() {
-        val idealPortfolio = idealRepo.read()
+        val assetAllocation = idealRepo.read()
         val currentPortfolio = currentRepo.read()
 
-        val response = balancePortfolio(idealPortfolio, currentPortfolio)
+        val response = balancePortfolio(assetAllocation, currentPortfolio)
 
         assertThat(response.isRight())
         response.bimap(
