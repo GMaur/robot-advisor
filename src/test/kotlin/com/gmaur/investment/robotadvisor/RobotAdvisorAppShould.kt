@@ -57,7 +57,7 @@ class RobotAdvisorAppShould {
     private val currentRepo: FilePortfolioRepository = FilePortfolioRepository()
 
     @Test
-    fun `handle incorrectly requests`() {
+    fun `handle incorrect requests - empty body`() {
 
         val idealPortfolio = idealRepo.read()
         val currentPortfolio = currentRepo.read()
@@ -69,7 +69,7 @@ class RobotAdvisorAppShould {
                 .content(serialize(request))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError)
-        //TODO test that the error is a 400 - Bad request
+                .andExpect(status().isNotFound)
 
         verifyZeroInteractions(portfolioRebalancer)
     }
