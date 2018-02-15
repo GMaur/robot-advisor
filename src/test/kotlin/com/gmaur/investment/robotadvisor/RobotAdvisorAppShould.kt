@@ -80,7 +80,7 @@ class RobotAdvisorAppShould {
 
 
     @Test
-    fun `receive incorrectly requests`() {
+    fun `handle incorrectly requests`() {
 
         val idealPortfolio = idealRepo.read()
         val currentPortfolio = currentRepo.read()
