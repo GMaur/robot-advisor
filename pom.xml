@@ -23,7 +23,8 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 		<kotlin.version>1.2.20</kotlin.version>
-	</properties>
+        <arrow.version>0.6.1</arrow.version>
+    </properties>
 
 	<dependencies>
 		<dependency>
@@ -81,10 +82,9 @@
         </dependency>
 
         <dependency>
-            <!--for json serialization-->
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-kotlin</artifactId>
-            <version>2.9.0</version>
+            <groupId>io.arrow-kt</groupId>
+            <artifactId>arrow-core</artifactId>
+            <version>${arrow.version}</version>
         </dependency>
     </dependencies>
 
