@@ -6,6 +6,7 @@ import com.gmaur.investment.robotadvisor.domain.PortfolioRebalancer
 import com.gmaur.investment.robotadvisor.infrastructure.FileAssetAllocationRepository
 import com.gmaur.investment.robotadvisor.infrastructure.FilePortfolioRepository
 import com.gmaur.investment.robotadvisor.infrastructure.RebalanceRequest
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
@@ -20,7 +21,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 
@@ -64,8 +65,7 @@ class RobotAdvisorAppShould {
 
         val request = RebalanceRequest(ideal = idealPortfolio, current = currentPortfolio)
 
-        mockMvc.perform(MockMvcRequestBuilders
-                .post("/rebalance")
+        mockMvc.perform(post("/rebalance")
                 .content(serialize(request))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError)
@@ -74,8 +74,30 @@ class RobotAdvisorAppShould {
         verifyZeroInteractions(portfolioRebalancer)
     }
 
+
+    @Ignore("this test, using mockmvc, has a different result than using the real mvc")
+    @Test
+    fun `handle incorrect requests - can't build a proper request`() {
+        val jsonPayload = """
+            {"ideal":{"values":[{"isin":{"value":"LU1"},"percentage":{"value":"80"}},{"isin":{"value":"LU2"},"percentage":{"value":"20"}}]},
+            "current":null}
+            """ // missing the current portfolio
+
+        mockMvc.perform(post("/rebalance")
+                .content(jsonPayload)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError)
+                .andExpect(status().isBadRequest)
+
+        verifyZeroInteractions(portfolioRebalancer)
+    }
+
     private fun serialize(request: RebalanceRequest): String? {
         return objectMapper.writeValueAsString(request)
+    }
+
+    private fun deserialize(request: String): Any {
+        return objectMapper.readValue(request, RebalanceRequest::class.java)
     }
 }
 
