@@ -19,8 +19,8 @@ class RobotAdvisorApp {
     private val mapper: ObjectMapper = ObjectMapper().registerKotlinModule()
 
     @PostMapping("/rebalance/")
-    fun rebalance(@RequestBody(required = true) body: RebalanceRequest): Any {
-        println(body)
+    fun rebalance(@RequestBody(required = true) rebalanceRequest: RebalanceRequest): Any {
+        println(rebalanceRequest)
         return Operations(listOf())
     }
 

@@ -1,6 +1,9 @@
 package com.gmaur.investment.robotadvisor.infrastructure
 
+import com.gmaur.investment.robotadvisor.domain.AssetAllocation
+import com.gmaur.investment.robotadvisor.domain.AssetAllocationSingle
 import com.gmaur.investment.robotadvisor.domain.ISIN
+import com.gmaur.investment.robotadvisor.domain.Percentage
 
 class FileAssetAllocationRepository {
     fun read(): AssetAllocation {
@@ -10,8 +13,3 @@ class FileAssetAllocationRepository {
     }
 }
 
-data class AssetAllocation(val values: List<AssetAllocationSingle>)
-
-data class AssetAllocationSingle(val isin: ISIN, val percentage: Percentage)
-
-data class Percentage(val value: String)

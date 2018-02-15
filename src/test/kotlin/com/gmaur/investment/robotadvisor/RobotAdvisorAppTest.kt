@@ -7,9 +7,9 @@ import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
+import com.gmaur.investment.robotadvisor.domain.AssetAllocation
 import com.gmaur.investment.robotadvisor.domain.Operations
 import com.gmaur.investment.robotadvisor.domain.Portfolio
-import com.gmaur.investment.robotadvisor.infrastructure.AssetAllocation
 import com.gmaur.investment.robotadvisor.infrastructure.FileAssetAllocationRepository
 import com.gmaur.investment.robotadvisor.infrastructure.FilePortfolioRepository
 import org.assertj.core.api.Assertions.assertThat

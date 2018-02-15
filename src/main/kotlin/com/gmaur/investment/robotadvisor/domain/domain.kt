@@ -18,3 +18,6 @@ data class Amount(val value: BigDecimal)
 data class ISIN(val value: String)
 
 data class Asset(val isin: ISIN, val amount: Amount)
+data class AssetAllocation(val values: List<AssetAllocationSingle>)
+data class AssetAllocationSingle(val isin: ISIN, val percentage: Percentage)
+data class Percentage(val value: String)
