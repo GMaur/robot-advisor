@@ -75,8 +75,7 @@ class RobotAdvisorAppShould {
     }
 
     private fun serialize(request: RebalanceRequest): String? {
-        val mapper: ObjectMapper = objectMapper
-        return mapper.writeValueAsString(request)
+        return objectMapper.writeValueAsString(request)
     }
 }
 
