@@ -27,8 +27,12 @@ class RobotAdvisorAppTest {
     var port: Int? = null
 
     private val idealRepo: FilePortfolioRepository = FilePortfolioRepository()
-
     private val currentRepo: FilePortfolioRepository = FilePortfolioRepository()
+    private val objectMapper: ObjectMapper
+
+    constructor() {
+        objectMapper = ObjectMapper().registerKotlinModule()
+    }
 
     @Before
     fun setUp() {
@@ -40,7 +44,7 @@ class RobotAdvisorAppTest {
         val idealPortfolio = idealRepo.read()
         val currentPortfolio = currentRepo.read()
 
-        val (response, result) = balance(idealPortfolio, currentPortfolio)
+        val (response, result) = balancePortfolio(idealPortfolio, currentPortfolio)
 
         assertThat(deserialize(result.get())).isEqualTo(Operations(listOf()))
         assertThat(response.statusCode).isEqualTo(200)
@@ -50,18 +54,13 @@ class RobotAdvisorAppTest {
         return objectMapper.readValue<Operations>(get, Operations::class.java)
     }
 
-    private fun balance(idealDistribution: Portfolio, currentDistribution: Portfolio): Pair<Response, Result<String, FuelError>> {
+    private fun balancePortfolio(idealDistribution: Portfolio, currentDistribution: Portfolio): Pair<Response, Result<String, FuelError>> {
         val request = RebalanceRequest(ideal = idealDistribution, current = currentDistribution)
         val httpPost = "/rebalance/".httpPost().body(serialize(request)!!, Charsets.UTF_8).header("Content-Type" to "application/json")
         val (_, response, result) = httpPost.responseString()
         return Pair(response, result)
     }
 
-    private val objectMapper: ObjectMapper
-        get() {
-            val mapper: ObjectMapper = ObjectMapper().registerKotlinModule()
-            return mapper
-        }
 
     private fun serialize(request: RebalanceRequest): String? {
         val mapper: ObjectMapper = objectMapper
