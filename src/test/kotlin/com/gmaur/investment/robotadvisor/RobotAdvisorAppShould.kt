@@ -2,13 +2,6 @@ package com.gmaur.investment.robotadvisor
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import com.github.kittinunf.fuel.core.FuelError
-import com.github.kittinunf.fuel.core.Response
-import com.github.kittinunf.fuel.httpPost
-import com.github.kittinunf.result.Result
-import com.gmaur.investment.robotadvisor.domain.AssetAllocation
-import com.gmaur.investment.robotadvisor.domain.Operations
-import com.gmaur.investment.robotadvisor.domain.Portfolio
 import com.gmaur.investment.robotadvisor.domain.PortfolioRebalancer
 import com.gmaur.investment.robotadvisor.infrastructure.FileAssetAllocationRepository
 import com.gmaur.investment.robotadvisor.infrastructure.FilePortfolioRepository
@@ -80,18 +73,6 @@ class RobotAdvisorAppShould {
 
         verifyZeroInteractions(portfolioRebalancer)
     }
-
-    private fun deserialize(get: String): Operations {
-        return objectMapper.readValue<Operations>(get, Operations::class.java)
-    }
-
-    private fun balancePortfolio(idealDistribution: AssetAllocation, currentDistribution: Portfolio): Pair<Response, Result<String, FuelError>> {
-        val request = RebalanceRequest(ideal = idealDistribution, current = currentDistribution)
-        val httpPost = "/rebalance/".httpPost().body(serialize(request)!!, Charsets.UTF_8).header("Content-Type" to "application/json")
-        val (_, response, result) = httpPost.responseString()
-        return Pair(response, result)
-    }
-
 
     private fun serialize(request: RebalanceRequest): String? {
         val mapper: ObjectMapper = objectMapper
