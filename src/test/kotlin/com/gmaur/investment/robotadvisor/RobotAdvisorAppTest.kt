@@ -11,6 +11,7 @@ import com.github.kittinunf.result.Result
 import com.gmaur.investment.robotadvisor.domain.AssetAllocation
 import com.gmaur.investment.robotadvisor.domain.Operations
 import com.gmaur.investment.robotadvisor.domain.Portfolio
+import com.gmaur.investment.robotadvisor.domain.PortfolioRebalancer
 import com.gmaur.investment.robotadvisor.infrastructure.FileAssetAllocationRepository
 import com.gmaur.investment.robotadvisor.infrastructure.FilePortfolioRepository
 import com.gmaur.investment.robotadvisor.infrastructure.RebalanceRequest
@@ -19,14 +20,16 @@ import org.assertj.core.api.Assertions.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner::class)
-@EnableAutoConfiguration
+//@EnableAutoConfiguration
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ContextConfiguration(classes = [RobotAdvisorApp::class, RobotAdvisorAppShould.FakeConfiguration::class])
 class RobotAdvisorAppTest {
     @LocalServerPort
     var port: Int? = null
@@ -34,6 +37,10 @@ class RobotAdvisorAppTest {
     private val idealRepo: FileAssetAllocationRepository = FileAssetAllocationRepository()
     private val currentRepo: FilePortfolioRepository = FilePortfolioRepository()
     private val objectMapper: ObjectMapper
+
+    @Autowired
+    private lateinit var portfolioRebalancer: PortfolioRebalancer
+
 
     constructor() {
         objectMapper = ObjectMapper().registerKotlinModule()
@@ -60,6 +67,12 @@ class RobotAdvisorAppTest {
                     assertThat(deserialize(result.get())).isEqualTo(Operations(listOf()))
                     assertThat(response.statusCode).isEqualTo(200)
                 })
+//        verify(portfolioRebalancer, AtMost(1)).
+//        verify(portfolioRebalancer).rebalance(AssetAllocation(listOf()), Portfolio(listOf()))
+        // TODO AGB investigate how to argumentMatch anyOf(AssetAllocation)
+//        verify(portfolioRebalancer).rebalance(any<AssetAllocation>(AssetAllocation::class.java), any<Portfolio>(Portfolio::class.java))
+        println("X")
+        fail("not injecting the portfolioRebalancer in a way that I can capture it")
     }
 
     @Test

@@ -7,7 +7,9 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.gmaur.investment.robotadvisor.domain.AssetAllocation
 import com.gmaur.investment.robotadvisor.domain.Operations
 import com.gmaur.investment.robotadvisor.domain.Portfolio
+import com.gmaur.investment.robotadvisor.domain.PortfolioRebalancer
 import com.gmaur.investment.robotadvisor.infrastructure.RebalanceRequest
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -21,12 +23,17 @@ class RobotAdvisorApp {
 
     private val mapper: ObjectMapper = ObjectMapper().registerKotlinModule()
 
+    @Autowired
+    private lateinit var portfolioRebalancer: PortfolioRebalancer
+
     @PostMapping("/rebalance/")
     fun rebalance(@RequestBody rebalanceRequest: RebalanceRequest): Any {
         println(rebalanceRequest)
         Rebalance.parse(rebalanceRequest).bimap(
                 { it -> throw IllegalArgumentException(it[0].message) },
-                { it -> println("Rebalance OK") })
+                { it -> Rebalance(it.current, it.ideal) })
+                .map { portfolioRebalancer.rebalance(it.ideal, it.current) }
+
         return Operations(listOf())
     }
 
