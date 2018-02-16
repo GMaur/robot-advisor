@@ -41,6 +41,15 @@ class RobotAdvisorAppShould {
         Mockito.verifyZeroInteractions(portfolioRebalancer)
     }
 
+    @Test
+    fun `forward the message to the portfolio rebalancer`() {
+        expectedException.expect(IllegalArgumentException::class.java)
+
+        robotAdvisorApp?.rebalance(correctRebalanceRequest.copy(ideal = null))
+
+        Mockito.verify(portfolioRebalancer).rebalance(correctRebalanceRequest.ideal!!, correctRebalanceRequest.current!!)
+    }
+
     private val correctRebalanceRequest: RebalanceRequest = RebalanceRequest(
             AssetAllocation(
                     listOf(AssetAllocationSingle(ISIN("LU1"), Percentage("100")))),
