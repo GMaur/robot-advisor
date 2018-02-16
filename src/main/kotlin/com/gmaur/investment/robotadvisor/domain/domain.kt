@@ -24,15 +24,15 @@ data class Portfolio(val assets: List<Any>) {
         )
     }
 
-    fun groupBy(): X {
+    fun groupBy(): GroupedAmounts {
         val temp: HashMap<ISIN, Amount> = HashMap()
         for (asset in asAsset(this.assets)) {
             temp[asset.isin] = temp.getOrDefault(asset.isin, Amount(BigDecimal.valueOf(0))).add(asset.amount)
         }
-        return X(temp)
+        return GroupedAmounts(temp)
     }
 
-    class X(private val values: Map<ISIN, Amount>) {
+    class GroupedAmounts(private val values: Map<ISIN, Amount>) {
         fun get(isin: ISIN): Amount? {
             return values[isin]
         }
@@ -81,15 +81,15 @@ data class AssetAllocation(val values: List<AssetAllocationSingle>) {
         return true
     }
 
-    private fun groupBy(): Y {
+    private fun groupBy(): GroupedPercentages {
         val temp: HashMap<ISIN, Percentage> = HashMap()
         for (asset in this.values) {
             temp[asset.isin] = temp.getOrDefault(asset.isin, Percentage("0")).add(asset.percentage)
         }
-        return Y(temp)
+        return GroupedPercentages(temp)
     }
 
-    class Y(private val values: HashMap<ISIN, Percentage>) {
+    class GroupedPercentages(private val values: HashMap<ISIN, Percentage>) {
         fun get(isin: ISIN): Percentage? {
             return values[isin]
         }
