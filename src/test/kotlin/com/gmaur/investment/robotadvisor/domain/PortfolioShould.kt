@@ -12,7 +12,7 @@ class PortfolioShould {
                 Asset(ISIN(""), Amount(BigDecimal.valueOf(1)))
         )).total()
 
-        assertThat(total).isEqualTo(Amount(BigDecimal.valueOf(2)))
+        assertThat(total).isEqualTo(Amount(BigDecimal("2.00")))
     }
 
     @Test
@@ -22,6 +22,6 @@ class PortfolioShould {
                 Asset(ISIN(""), Amount(BigDecimal("0.9")))
         )).total()
 
-        assertThat(total.value.subtract(BigDecimal.valueOf(2))).isEqualTo(BigDecimal("0.0"))
+        assertThat(total.value.subtract(BigDecimal.valueOf(2))).isEqualTo(BigDecimal("0.00"))
     }
 }
