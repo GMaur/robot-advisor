@@ -65,4 +65,21 @@ class PortfolioRebalancerShould {
 
         assertThat(rebalance).isEqualTo(Operations(listOf()))
     }
+
+    @Test
+    fun `not rebalance a portfolio that is correct already, with several assets and the allocation is composed by several, order does not matter`() {
+        val ideal = AssetAllocation(listOf(
+                AssetAllocationSingle(ISIN("LU1"), Percentage("0.6")),
+                AssetAllocationSingle(ISIN("LU2"), Percentage("0.4"))
+        ))
+        val current = Portfolio(listOf(
+                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(60L))),
+                Asset(ISIN("LU2"), Amount(BigDecimal.valueOf(40L)))
+        ))
+
+
+        val rebalance = PortfolioRebalancer().rebalance(ideal, current)
+
+        assertThat(rebalance).isEqualTo(Operations(listOf()))
+    }
 }
