@@ -4,7 +4,10 @@ import arrow.core.Either
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import com.gmaur.investment.robotadvisor.domain.*
+import com.gmaur.investment.robotadvisor.domain.AssetAllocation
+import com.gmaur.investment.robotadvisor.domain.Operations
+import com.gmaur.investment.robotadvisor.domain.Portfolio
+import com.gmaur.investment.robotadvisor.domain.PortfolioRebalancer
 import com.gmaur.investment.robotadvisor.infrastructure.RebalanceRequest
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
@@ -27,18 +30,10 @@ class RobotAdvisorApp(private val portfolioRebalancer: PortfolioRebalancer) : Ap
 
     @PostMapping("/rebalance/")
     fun rebalance(@RequestBody rebalanceRequest: RebalanceRequest): Any {
-        //this has been mocked
-        println("MOCKED INVOCATION HERE")
-        println(portfolioRebalancer.rebalance(AssetAllocation(listOf()), Portfolio(listOf())))
-        println("REAL INVOCATION HERE")
-        println(portfolioRebalancer.rebalance(AssetAllocation(listOf(AssetAllocationSingle(ISIN("LUX"), Percentage("31")))), Portfolio(listOf())))
-        println(rebalanceRequest)
-        println(Rebalance.parse(rebalanceRequest).bimap(
+        Rebalance.parse(rebalanceRequest).bimap(
                 { it -> throw IllegalArgumentException(it[0].message) },
                 { it -> Rebalance(it.current, it.ideal) })
-                .map { portfolioRebalancer.rebalance(it.ideal, it.current) })
-
-        println(portfolioRebalancer)
+                .map { portfolioRebalancer.rebalance(it.ideal, it.current) }
         return Operations(listOf())
     }
 

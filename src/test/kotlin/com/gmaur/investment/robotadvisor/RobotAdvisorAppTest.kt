@@ -20,7 +20,8 @@ import org.assertj.core.api.Assertions.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.`when`
+import org.mockito.Mockito
+import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
@@ -57,7 +58,7 @@ class RobotAdvisorAppTest {
         val assetAllocation = idealRepo.read()
         val currentPortfolio = currentRepo.read()
 
-        `when`(portfolioRebalancer.rebalance(AssetAllocation(listOf()), Portfolio(listOf()))).thenReturn(Operations(listOf()))
+//        `when`(portfolioRebalancer.rebalance(AssetAllocation(listOf()), Portfolio(listOf()))).thenReturn(Operations(listOf()))
 
         val response = balancePortfolio(assetAllocation, currentPortfolio)
 
@@ -70,14 +71,11 @@ class RobotAdvisorAppTest {
                     assertThat(deserialize(result.get())).isEqualTo(Operations(listOf()))
                     assertThat(response.statusCode).isEqualTo(200)
                 })
-//        verify(portfolioRebalancer, AtMost(1)).
-//        verify(portfolioRebalancer).rebalance(AssetAllocation(listOf()), Portfolio(listOf())) // Mockito.verify(portfolioRebalancer).rebalance(AssetAllocation(listOf(AssetAllocationSingle(ISIN("LUX"), Percentage("31")))), Portfolio(listOf()))
+        verify(portfolioRebalancer).rebalance(assetAllocation, currentPortfolio)
+        // Mockito.verify(portfolioRebalancer).rebalance(AssetAllocation(listOf(AssetAllocationSingle(ISIN("LUX"),
+        // Percentage("31")))), Portfolio(listOf()))
         // TODO AGB investigate how to argumentMatch anyOf(AssetAllocation)
-//        verify(portfolioRebalancer).rebalance(any<AssetAllocation>(AssetAllocation::class.java), any<Portfolio>(Portfolio::class.java))
-        println(portfolioRebalancer)
-        println("X")
-//        Mockito.calls(1).verify(VerificationDataImpl())
-        fail("not injecting the portfolioRebalancer in a way that I can capture it")
+        Mockito.verifyNoMoreInteractions(portfolioRebalancer)
     }
 
     @Test
@@ -100,6 +98,7 @@ class RobotAdvisorAppTest {
                         }
                     }
                 })
+        Mockito.verifyZeroInteractions(portfolioRebalancer)
     }
 
     private fun deserialize(get: String): Operations {

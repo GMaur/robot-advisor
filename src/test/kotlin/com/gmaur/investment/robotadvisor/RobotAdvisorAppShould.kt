@@ -41,7 +41,7 @@ class RobotAdvisorAppShould {
 
     @Configuration
     class FakeConfiguration {
-        private val portfolioRebalancer = Mockito.mock(PortfolioRebalancer::class.java, Mockito.withSettings().verboseLogging())
+        private val portfolioRebalancer = Mockito.mock(PortfolioRebalancer::class.java)
 
         @Bean
         fun rebalancer(): PortfolioRebalancer {
