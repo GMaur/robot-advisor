@@ -16,7 +16,7 @@ class PortfolioRebalancerShould {
     }
 
     @Test
-    fun `not rebalance a portfolio that is correct already, with several assets (case 1)`() {
+    fun `not rebalance a portfolio that is correct already, with several assets - repeated allocation cases)`() {
         val ideal = AssetAllocation(listOf(
                 AssetAllocationSingle(ISIN("LU1"), Percentage("0.5")),
                 AssetAllocationSingle(ISIN("LU1"), Percentage("0.5"))
@@ -33,7 +33,7 @@ class PortfolioRebalancerShould {
     }
 
     @Test
-    fun `not rebalance a portfolio that is correct already, with several assets (case 2)`() {
+    fun `not rebalance a portfolio that is correct already, with several assets - no repeated allocation cases`() {
         val ideal = AssetAllocation(listOf(
                 AssetAllocationSingle(ISIN("LU1"), Percentage("1"))
         ))
