@@ -1,13 +1,12 @@
 package com.gmaur.investment.robotadvisor
 
-import com.gmaur.investment.robotadvisor.domain.*
+import com.gmaur.investment.robotadvisor.domain.PortfolioRebalancer
 import com.gmaur.investment.robotadvisor.infrastructure.RebalanceRequest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
 import org.mockito.Mockito
-import java.math.BigDecimal
 
 class RobotAdvisorAppShould {
     private val portfolioRebalancer: PortfolioRebalancer = Mockito.mock(PortfolioRebalancer::class.java)
@@ -50,9 +49,5 @@ class RobotAdvisorAppShould {
         Mockito.verify(portfolioRebalancer).rebalance(correctRebalanceRequest.ideal!!, correctRebalanceRequest.current!!)
     }
 
-    private val correctRebalanceRequest: RebalanceRequest = RebalanceRequest(
-            AssetAllocation(
-                    listOf(AssetAllocationSingle(ISIN("LU1"), Percentage("100")))),
-            Portfolio(listOf(Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(100L)))))
-    )
+    private val correctRebalanceRequest: RebalanceRequest = RebalanceRequestObjectMother.aNew()
 }
