@@ -4,36 +4,38 @@ import arrow.core.Either
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import com.gmaur.investment.robotadvisor.domain.AssetAllocation
-import com.gmaur.investment.robotadvisor.domain.Operations
-import com.gmaur.investment.robotadvisor.domain.Portfolio
-import com.gmaur.investment.robotadvisor.domain.PortfolioRebalancer
+import com.gmaur.investment.robotadvisor.domain.*
 import com.gmaur.investment.robotadvisor.infrastructure.RebalanceRequest
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.ApplicationArguments
+import org.springframework.boot.ApplicationRunner
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.context.annotation.ComponentScan
+import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
+@Configuration
 @SpringBootApplication
 @EnableAutoConfiguration
+@ComponentScan(basePackages = arrayOf("com.gmaur.investment.robotadvisor"))
 @RestController
-class RobotAdvisorApp {
+class RobotAdvisorApp(private val portfolioRebalancer: PortfolioRebalancer) : ApplicationRunner {
 
     private val mapper: ObjectMapper = ObjectMapper().registerKotlinModule()
 
-    @Autowired
-    private lateinit var portfolioRebalancer: PortfolioRebalancer
-
     @PostMapping("/rebalance/")
     fun rebalance(@RequestBody rebalanceRequest: RebalanceRequest): Any {
+        portfolioRebalancer.rebalance(AssetAllocation(listOf()), Portfolio(listOf()))
+        portfolioRebalancer.rebalance(AssetAllocation(listOf(AssetAllocationSingle(ISIN("LUX"), Percentage("31")))), Portfolio(listOf()))
         println(rebalanceRequest)
-        Rebalance.parse(rebalanceRequest).bimap(
+        println(Rebalance.parse(rebalanceRequest).bimap(
                 { it -> throw IllegalArgumentException(it[0].message) },
                 { it -> Rebalance(it.current, it.ideal) })
-                .map { portfolioRebalancer.rebalance(it.ideal, it.current) }
+                .map { portfolioRebalancer.rebalance(it.ideal, it.current) })
 
+        println(portfolioRebalancer)
         return Operations(listOf())
     }
 
@@ -44,6 +46,12 @@ class RobotAdvisorApp {
 
     init {
         mapper.enable(SerializationFeature.INDENT_OUTPUT)
+    }
+
+    @Throws(Exception::class)
+    override fun run(args: ApplicationArguments) {
+        println("Application running!")
+        //TODO AGB healtcheck
     }
 }
 

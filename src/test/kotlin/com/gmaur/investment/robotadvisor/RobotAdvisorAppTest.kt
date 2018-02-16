@@ -28,8 +28,8 @@ import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner::class)
 //@EnableAutoConfiguration
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(classes = [RobotAdvisorApp::class, RobotAdvisorAppShould.FakeConfiguration::class])
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class RobotAdvisorAppTest {
     @LocalServerPort
     var port: Int? = null
@@ -68,10 +68,12 @@ class RobotAdvisorAppTest {
                     assertThat(response.statusCode).isEqualTo(200)
                 })
 //        verify(portfolioRebalancer, AtMost(1)).
-//        verify(portfolioRebalancer).rebalance(AssetAllocation(listOf()), Portfolio(listOf()))
+//        verify(portfolioRebalancer).rebalance(AssetAllocation(listOf()), Portfolio(listOf())) // Mockito.verify(portfolioRebalancer).rebalance(AssetAllocation(listOf(AssetAllocationSingle(ISIN("LUX"), Percentage("31")))), Portfolio(listOf()))
         // TODO AGB investigate how to argumentMatch anyOf(AssetAllocation)
 //        verify(portfolioRebalancer).rebalance(any<AssetAllocation>(AssetAllocation::class.java), any<Portfolio>(Portfolio::class.java))
+        println(portfolioRebalancer)
         println("X")
+//        Mockito.calls(1).verify(VerificationDataImpl())
         fail("not injecting the portfolioRebalancer in a way that I can capture it")
     }
 
