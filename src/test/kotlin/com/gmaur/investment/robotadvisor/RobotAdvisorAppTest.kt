@@ -71,8 +71,6 @@ class RobotAdvisorAppTest {
                     assertThat(response.statusCode).isEqualTo(200)
                 })
         verify(portfolioRebalancer).rebalance(assetAllocation, currentPortfolio)
-        // Mockito.verify(portfolioRebalancer).rebalance(AssetAllocation(listOf(AssetAllocationSingle(ISIN("LUX"),
-        // Percentage("31")))), Portfolio(listOf()))
         // TODO AGB investigate how to argumentMatch anyOf(AssetAllocation)
         Mockito.verifyNoMoreInteractions(portfolioRebalancer)
     }
