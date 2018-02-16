@@ -43,7 +43,6 @@ class PortfolioRebalancerShould {
                 Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L)))
         ))
 
-
         val rebalance = PortfolioRebalancer().rebalance(ideal, current)
 
         assertThat(rebalance).isEqualTo(Operations(listOf()))
