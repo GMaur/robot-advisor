@@ -19,12 +19,13 @@ class PortfolioRebalancerShould {
     }
 
     @Test
-    fun `not rebalance a portfolio that is correct already, with two assets`() {
+    fun `not rebalance a portfolio that is correct already, with several assets`() {
         val rebalanceRequest = RebalanceRequest(
                 AssetAllocation(listOf(
                         AssetAllocationSingle(ISIN("LU1"), Percentage("1"))
                 )),
                 Portfolio(listOf(
+                        Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L))),
                         Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L))),
                         Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L)))
                 ))
