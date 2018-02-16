@@ -20,6 +20,7 @@ import org.assertj.core.api.Assertions.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
@@ -55,6 +56,8 @@ class RobotAdvisorAppTest {
     fun `balances a portfolio comparing to the ideal distribution`() {
         val assetAllocation = idealRepo.read()
         val currentPortfolio = currentRepo.read()
+
+        `when`(portfolioRebalancer.rebalance(AssetAllocation(listOf()), Portfolio(listOf()))).thenReturn(Operations(listOf()))
 
         val response = balancePortfolio(assetAllocation, currentPortfolio)
 

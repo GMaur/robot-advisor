@@ -27,8 +27,11 @@ class RobotAdvisorApp(private val portfolioRebalancer: PortfolioRebalancer) : Ap
 
     @PostMapping("/rebalance/")
     fun rebalance(@RequestBody rebalanceRequest: RebalanceRequest): Any {
-        portfolioRebalancer.rebalance(AssetAllocation(listOf()), Portfolio(listOf()))
-        portfolioRebalancer.rebalance(AssetAllocation(listOf(AssetAllocationSingle(ISIN("LUX"), Percentage("31")))), Portfolio(listOf()))
+        //this has been mocked
+        println("MOCKED INVOCATION HERE")
+        println(portfolioRebalancer.rebalance(AssetAllocation(listOf()), Portfolio(listOf())))
+        println("REAL INVOCATION HERE")
+        println(portfolioRebalancer.rebalance(AssetAllocation(listOf(AssetAllocationSingle(ISIN("LUX"), Percentage("31")))), Portfolio(listOf())))
         println(rebalanceRequest)
         println(Rebalance.parse(rebalanceRequest).bimap(
                 { it -> throw IllegalArgumentException(it[0].message) },
