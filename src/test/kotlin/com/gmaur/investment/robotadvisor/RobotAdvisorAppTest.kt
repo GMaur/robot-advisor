@@ -30,7 +30,7 @@ import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner::class)
 //@EnableAutoConfiguration
-@ContextConfiguration(classes = [RobotAdvisorApp::class, RobotAdvisorAppShould.FakeConfiguration::class])
+@ContextConfiguration(classes = [RobotAdvisorApp::class, FakeConfiguration::class])
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class RobotAdvisorAppTest {
     @LocalServerPort

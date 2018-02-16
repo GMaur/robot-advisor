@@ -9,14 +9,11 @@ import com.gmaur.investment.robotadvisor.infrastructure.RebalanceRequest
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito
 import org.mockito.Mockito.verifyZeroInteractions
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringRunner
@@ -27,7 +24,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @RunWith(SpringRunner::class)
 @SpringBootTest
-@ContextConfiguration(classes = [RobotAdvisorApp::class, RobotAdvisorAppShould.FakeConfiguration::class])
+@ContextConfiguration(classes = [RobotAdvisorApp::class, FakeConfiguration::class])
 @AutoConfigureMockMvc(print = MockMvcPrint.LOG_DEBUG)
 class RobotAdvisorAppShould {
 
@@ -38,16 +35,6 @@ class RobotAdvisorAppShould {
 
     @Autowired
     private lateinit var portfolioRebalancer: PortfolioRebalancer
-
-    @Configuration
-    class FakeConfiguration {
-        private val portfolioRebalancer = Mockito.mock(PortfolioRebalancer::class.java)
-
-        @Bean
-        fun rebalancer(): PortfolioRebalancer {
-            return portfolioRebalancer
-        }
-    }
 
 
     constructor() {
