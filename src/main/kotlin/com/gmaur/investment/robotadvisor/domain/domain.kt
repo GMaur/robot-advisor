@@ -65,15 +65,15 @@ data class AssetAllocation(val values: List<AssetAllocationSingle>) {
     fun matches(portfolio: Portfolio): Boolean {
         val assets = asAsset(portfolio.assets)
         val total = portfolio.total()
-        val x = portfolio.groupBy()
-        val y = this.groupBy()
-        //TODO AGB need to assert on teh amount of x = grouped assets
+        val groupedAmounts = portfolio.groupBy()
+        val groupedPercentages = this.groupBy()
+        //TODO AGB need to assert on teh amount of groupedAmounts = grouped assets
         for (asset in assets) {
-            val assetExists = x.get(asset.isin) != null
+            val assetExists = groupedAmounts.get(asset.isin) != null
             if (!assetExists) {
                 return false
             }
-            val assetSamePercentage = x.get(asset.isin)!!.percentageOf(total) == y.get(asset.isin)
+            val assetSamePercentage = groupedAmounts.get(asset.isin)!!.percentageOf(total) == groupedPercentages.get(asset.isin)
             if (!assetSamePercentage) {
                 return false
             }
