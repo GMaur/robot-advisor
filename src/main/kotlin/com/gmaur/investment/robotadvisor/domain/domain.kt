@@ -33,8 +33,8 @@ data class Portfolio(val assets: List<Any>) {
     }
 
     class X(private val values: Map<ISIN, Amount>) {
-        fun get(isin: ISIN): Amount {
-            return values[isin]!!
+        fun get(isin: ISIN): Amount? {
+            return values[isin]
         }
     }
 
@@ -49,11 +49,11 @@ data class Portfolio(val assets: List<Any>) {
 
 data class Amount(val value: BigDecimal) {
     fun add(amount: Amount): Amount {
-        return Amount(this.value.add(amount.value))
+        return Amount(this.value.add(amount.value).setScale(2))
     }
 
     fun percentageOf(total: Amount): Percentage {
-        return Percentage(this.value.divide(total.value).toString())
+        return Percentage(this.value.divide(total.value).setScale(2).toString())
     }
 }
 
@@ -65,15 +65,41 @@ data class AssetAllocation(val values: List<AssetAllocationSingle>) {
     fun matches(portfolio: Portfolio): Boolean {
         val assets = asAsset(portfolio.assets)
         val total = portfolio.total()
-        val firstAssetPercentage = portfolio.groupBy().get(assets.first().isin).percentageOf(total)
-        val sameISIN = assets.first().isin == this.values[0].isin
-        val samePercentage = firstAssetPercentage == this.values[0].percentage
-        if (sameISIN && samePercentage) {
-            return true
+        val x = portfolio.groupBy()
+        val y = this.groupBy()
+        //TODO AGB need to assert on teh amount of x = grouped assets
+        for (asset in assets) {
+            val assetExists = x.get(asset.isin) != null
+            if (!assetExists) {
+                return false
+            }
+            val assetSamePercentage = x.get(asset.isin)!!.percentageOf(total) == y.get(asset.isin)
+            if (!assetSamePercentage) {
+                return false
+            }
         }
-        return false
+        return true
+    }
+
+    private fun groupBy(): Y {
+        val temp: HashMap<ISIN, Percentage> = HashMap()
+        for (asset in this.values) {
+            temp[asset.isin] = temp.getOrDefault(asset.isin, Percentage("0")).add(asset.percentage)
+        }
+        return Y(temp)
+    }
+
+    class Y(private val values: HashMap<ISIN, Percentage>) {
+        fun get(isin: ISIN): Percentage? {
+            return values[isin]
+        }
     }
 }
 
 data class AssetAllocationSingle(val isin: ISIN, val percentage: Percentage)
-data class Percentage(val value: String)
+data class Percentage(val value: String) {
+    fun add(other: Percentage): Percentage {
+        val add = BigDecimal(this.value).add(BigDecimal(other.value)).setScale(2)
+        return Percentage(add.toEngineeringString())
+    }
+}
