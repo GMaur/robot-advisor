@@ -8,10 +8,7 @@ import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
-import com.gmaur.investment.robotadvisor.domain.AssetAllocation
-import com.gmaur.investment.robotadvisor.domain.Operations
-import com.gmaur.investment.robotadvisor.domain.Portfolio
-import com.gmaur.investment.robotadvisor.domain.PortfolioRebalancer
+import com.gmaur.investment.robotadvisor.domain.*
 import com.gmaur.investment.robotadvisor.infrastructure.FileAssetAllocationRepository
 import com.gmaur.investment.robotadvisor.infrastructure.FilePortfolioRepository
 import com.gmaur.investment.robotadvisor.infrastructure.RebalanceRequest
@@ -27,6 +24,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringRunner
+import java.math.BigDecimal.valueOf
 
 @RunWith(SpringRunner::class)
 @ContextConfiguration(classes = [RobotAdvisorApp::class, FakeConfiguration::class])
@@ -38,6 +36,13 @@ class RobotAdvisorAppTest {
     private val idealRepo: FileAssetAllocationRepository = FileAssetAllocationRepository()
     private val currentRepo: FilePortfolioRepository = FilePortfolioRepository()
     private val objectMapper: ObjectMapper
+
+    private fun <T> any(): T {
+        Mockito.any<T>()
+        return uninitialized()
+    }
+
+    private fun <T> uninitialized(): T = null as T
 
     @Autowired
     private lateinit var portfolioRebalancer: PortfolioRebalancer
@@ -57,8 +62,6 @@ class RobotAdvisorAppTest {
         val assetAllocation = idealRepo.read()
         val currentPortfolio = currentRepo.read()
 
-//        `when`(portfolioRebalancer.rebalance(AssetAllocation(listOf()), Portfolio(listOf()))).thenReturn(Operations(listOf()))
-
         val response = balancePortfolio(assetAllocation, currentPortfolio)
 
         assertThat(response.isRight())
@@ -69,6 +72,19 @@ class RobotAdvisorAppTest {
                 { (response, result) ->
                     assertThat(deserialize(result.get())).isEqualTo(Operations(listOf()))
                     assertThat(response.statusCode).isEqualTo(200)
+                    when (result) {
+                        is Result.Success -> {
+                            println(result.value)
+                            assertThat(deserialize(result.value)).isEqualTo(
+                                    Operations(listOf(
+                                            Purchase(Asset(ISIN("LU1"), Amount(valueOf(72L)))),
+                                            Purchase(Asset(ISIN("LU2"), Amount(valueOf(18L))))
+                                    )))
+                        }
+                        else -> {
+                            fail("expected a Result.success")
+                        }
+                    }
                 })
         verify(portfolioRebalancer).rebalance(assetAllocation, currentPortfolio)
         // TODO AGB investigate how to argumentMatch anyOf(AssetAllocation)
