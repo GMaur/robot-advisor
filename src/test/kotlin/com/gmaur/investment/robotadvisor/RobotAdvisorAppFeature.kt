@@ -29,7 +29,7 @@ import java.math.BigDecimal.valueOf
 @RunWith(SpringRunner::class)
 @ContextConfiguration(classes = [RobotAdvisorApp::class, FakeConfiguration::class])
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class RobotAdvisorAppTest {
+class RobotAdvisorAppFeature {
     @LocalServerPort
     var port: Int? = null
 
