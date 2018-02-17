@@ -59,7 +59,6 @@ class PortfolioRebalancerShould {
                 Asset(ISIN("LU2"), Amount(BigDecimal.valueOf(40L)))
         ))
 
-
         val rebalance = PortfolioRebalancer().rebalance(ideal, current)
 
         assertThat(rebalance).isEqualTo(Operations(listOf()))
@@ -76,9 +75,24 @@ class PortfolioRebalancerShould {
                 Asset(ISIN("LU2"), Amount(BigDecimal.valueOf(40L)))
         ))
 
-
         val rebalance = PortfolioRebalancer().rebalance(ideal, current)
 
         assertThat(rebalance).isEqualTo(Operations(listOf()))
+    }
+
+
+    @Test
+    fun `rebalance a portfolio with a single element in the asset allocation`() {
+        val ideal = AssetAllocation(listOf(
+                AssetAllocationSingle(ISIN("LU1"), Percentage("1"))
+        ))
+        val current = Portfolio(listOf(
+                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(60L))),
+                TransferrableAsset(Asset(ISIN("LU2"), Amount(BigDecimal.valueOf(40L))))
+        ))
+
+        val rebalance = PortfolioRebalancer().rebalance(ideal, current)
+
+        assertThat(rebalance).isEqualTo(Operations(listOf(Purchase(Asset(ISIN(""), Amount(BigDecimal.valueOf(40L)))))))
     }
 }

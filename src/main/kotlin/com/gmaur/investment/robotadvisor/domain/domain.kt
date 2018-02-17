@@ -7,20 +7,58 @@ import java.util.*
 
 data class Operations(val operations: List<Operation>)
 
-open class Operation(private val asset: Asset)
+open class Operation(private val asset: Asset) {
 
-class Sell(private val asset: Asset) : Operation(asset)
-class Purchase(private val asset: Asset) : Operation(asset)
-class Transfer(private val asset: Asset) : Operation(asset)
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Operation
+
+        if (asset != other.asset) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return asset.hashCode()
+    }
+}
+
+class Sell(private val asset: Asset) : Operation(asset) {
+    override fun toString(): String {
+        return "Sell(asset=$asset)"
+    }
+}
+
+class Purchase(private val asset: Asset) : Operation(asset) {
+    override fun toString(): String {
+        return "Purchase(asset=$asset)"
+    }
+}
+
+class Transfer(private val asset: Asset) : Operation(asset) {
+    override fun toString(): String {
+        return "Transfer(asset=$asset)"
+    }
+}
 
 //TODO AGB Type union?
 //TODO AGB make it typesafe
 data class Portfolio(val assets: List<Any>) {
     fun total(): Amount {
-        val assets = this.assets.map { it as Asset }
-        return assets.fold(
+        val amounts = assets.map { it ->
+            if (it is Asset) {
+                it.amount
+            } else if (it is TransferrableAsset) {
+                it.asset.amount
+            } else {
+                throw IllegalArgumentException()
+            }
+        }
+        return amounts.fold(
                 Amount(BigDecimal.valueOf(0)),
-                { amount, asset -> amount.add(asset.amount) }
+                { amount, other -> amount.add(other) }
         )
     }
 
@@ -39,9 +77,10 @@ data class Portfolio(val assets: List<Any>) {
     }
 
     companion object {
-
-        public fun asAsset(x: List<Any>): List<Asset> {
-            val assets = x.map { it as Asset }
+        fun asAsset(x: List<Any>): List<Asset> {
+            val assets = x.filter {
+                it is Asset
+            }.map { it as Asset }
             return assets
         }
     }
