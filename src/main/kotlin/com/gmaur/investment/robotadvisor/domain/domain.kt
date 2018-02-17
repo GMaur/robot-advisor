@@ -2,6 +2,8 @@ package com.gmaur.investment.robotadvisor.domain
 
 import com.gmaur.investment.robotadvisor.domain.Portfolio.Companion.asAsset
 import java.math.BigDecimal
+import java.math.MathContext
+import java.math.RoundingMode
 import java.util.*
 
 
@@ -92,7 +94,7 @@ data class Amount(val value: BigDecimal) {
     }
 
     fun percentageOf(total: Amount): Percentage {
-        return Percentage(this.value.divide(total.value).setScale(2).toString())
+        return Percentage(this.value.divide(total.value, MathContext(2, RoundingMode.HALF_EVEN)).setScale(2).toString())
     }
 }
 
