@@ -5,12 +5,15 @@ import org.junit.Test
 import java.math.BigDecimal
 
 class PortfolioRebalancerShould {
+    private val portfolioRebalancer = PortfolioRebalancer()
+
     @Test
     fun `not rebalance a portfolio that is correct already`() {
         val ideal = AssetAllocation(listOf(AssetAllocationSingle(ISIN("LU1"), Percentage("1"))))
         val current = Portfolio(listOf(Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(100L)))))
 
-        val rebalance = PortfolioRebalancer().rebalance(ideal, current)
+
+        val rebalance = portfolioRebalancer.rebalance(ideal, current)
 
         assertThat(rebalance).isEqualTo(Operations(listOf()))
     }
@@ -27,7 +30,7 @@ class PortfolioRebalancerShould {
                 Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L)))
         ))
 
-        val rebalance = PortfolioRebalancer().rebalance(ideal, current)
+        val rebalance = portfolioRebalancer.rebalance(ideal, current)
 
         assertThat(rebalance).isEqualTo(Operations(listOf()))
     }
@@ -43,7 +46,7 @@ class PortfolioRebalancerShould {
                 Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L)))
         ))
 
-        val rebalance = PortfolioRebalancer().rebalance(ideal, current)
+        val rebalance = portfolioRebalancer.rebalance(ideal, current)
 
         assertThat(rebalance).isEqualTo(Operations(listOf()))
     }
@@ -59,7 +62,7 @@ class PortfolioRebalancerShould {
                 Asset(ISIN("LU2"), Amount(BigDecimal.valueOf(40L)))
         ))
 
-        val rebalance = PortfolioRebalancer().rebalance(ideal, current)
+        val rebalance = portfolioRebalancer.rebalance(ideal, current)
 
         assertThat(rebalance).isEqualTo(Operations(listOf()))
     }
@@ -75,7 +78,7 @@ class PortfolioRebalancerShould {
                 Asset(ISIN("LU2"), Amount(BigDecimal.valueOf(40L)))
         ))
 
-        val rebalance = PortfolioRebalancer().rebalance(ideal, current)
+        val rebalance = portfolioRebalancer.rebalance(ideal, current)
 
         assertThat(rebalance).isEqualTo(Operations(listOf()))
     }
@@ -92,7 +95,7 @@ class PortfolioRebalancerShould {
                 TransferrableAsset(Asset(ISIN("LU2"), Amount(BigDecimal.valueOf(40L))))
         ))
 
-        val rebalance = PortfolioRebalancer().rebalance(ideal, current)
+        val rebalance = portfolioRebalancer.rebalance(ideal, current)
 
         assertThat(rebalance).isEqualTo(Operations(listOf(Purchase(Asset(ISIN("LU1"), Amount(BigDecimal("80.00")))))))
     }
@@ -109,7 +112,7 @@ class PortfolioRebalancerShould {
                 TransferrableAsset(Asset(ISIN(""), Amount(BigDecimal.valueOf(40L))))
         ))
 
-        val rebalance = PortfolioRebalancer().rebalance(ideal, current)
+        val rebalance = portfolioRebalancer.rebalance(ideal, current)
 
         assertThat(rebalance).isEqualTo(Operations(listOf(
                 Purchase(Asset(ISIN("LU1"), Amount(BigDecimal("40.00")))),
