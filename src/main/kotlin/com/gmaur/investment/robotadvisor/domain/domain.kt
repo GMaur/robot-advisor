@@ -154,19 +154,19 @@ interface RebalancingStrategy {
 }
 
 object FixedStrategy : RebalancingStrategy {
-    override fun rebalance(ideal: AssetAllocation, current: Portfolio): Operations {
-        if (ideal.matches(current)) {
+    override fun rebalance(assetAllocation: AssetAllocation, portfolio: Portfolio): Operations {
+        if (assetAllocation.matches(portfolio)) {
             return Operations(listOf())
         }
 
-        val totalAmount = current.assets
+        val totalAmount = portfolio.assets
                 .filter { it is TransferrableAsset }
                 .map { (it as TransferrableAsset).asset.amount }
                 .foldRight(Amount(BigDecimal.ZERO), { a, b ->
                     a.add(b)
                 })
 
-        return Operations(ideal.values.map { element -> Purchase(Asset(element.isin, totalAmount.multiply(element.percentage))) })
+        return Operations(assetAllocation.values.map { element -> Purchase(Asset(element.isin, totalAmount.multiply(element.percentage))) })
     }
 
 }
