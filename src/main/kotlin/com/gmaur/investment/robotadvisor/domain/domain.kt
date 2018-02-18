@@ -86,6 +86,16 @@ data class Portfolio(val assets: List<Any>) {
             return assets
         }
     }
+
+    fun totalTransferrableAmount(): Amount {
+        val result = this.assets
+                .filter { it is TransferrableAsset }
+                .map { (it as TransferrableAsset).asset.amount }
+                .foldRight(Amount(BigDecimal.ZERO), { a, b ->
+                    a.add(b)
+                })
+        return result
+    }
 }
 
 data class Amount(val value: BigDecimal) {
@@ -163,14 +173,13 @@ object FixedStrategy : RebalancingStrategy {
             return Operations(listOf())
         }
 
-        val totalAmount = portfolio.assets
-                .filter { it is TransferrableAsset }
-                .map { (it as TransferrableAsset).asset.amount }
-                .foldRight(Amount(BigDecimal.ZERO), { a, b ->
-                    a.add(b)
-                })
+        val totalAmount = totalTransferrableAmount(portfolio)
 
         return Operations(assetAllocation.values.map(toPurchase(totalAmount)))
+    }
+
+    private fun totalTransferrableAmount(portfolio: Portfolio): Amount {
+        return portfolio.totalTransferrableAmount()
     }
 
     private fun toPurchase(totalAmount: Amount) =
