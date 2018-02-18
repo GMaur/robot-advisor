@@ -23,7 +23,8 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 		<kotlin.version>1.2.20</kotlin.version>
-	</properties>
+        <arrow.version>0.6.1</arrow.version>
+    </properties>
 
 	<dependencies>
 		<dependency>
@@ -39,7 +40,12 @@
 			<artifactId>kotlin-reflect</artifactId>
 		</dependency>
 
-		<dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
@@ -47,8 +53,8 @@
 
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>2.0.2-beta</version>
+            <artifactId>mockito-core</artifactId>
+            <version>2.13.0</version>
             <scope>test</scope>
         </dependency>
 
@@ -57,6 +63,28 @@
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-kotlin</artifactId>
             <version>2.9.0</version>
+        </dependency>
+
+        <dependency>
+            <!--rest client-->
+            <groupId>com.github.kittinunf.fuel</groupId>
+            <artifactId>fuel</artifactId>
+            <version>1.12.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <!--rest client-->
+            <groupId>com.github.kittinunf.fuel</groupId>
+            <artifactId>fuel-jackson</artifactId>
+            <version>1.12.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.arrow-kt</groupId>
+            <artifactId>arrow-core</artifactId>
+            <version>${arrow.version}</version>
         </dependency>
     </dependencies>
 
@@ -84,6 +112,18 @@
 					</dependency>
 				</dependencies>
 			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.20.1</version>
+                <configuration>
+                    <includes>
+                        <include>**/**Test*.java</include>
+                        <include>**/**Should*.java</include>
+                        <include>**/**Feature*.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
 
@@ -103,7 +143,12 @@
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
-		</repository>
+        </repository>
+        <repository>
+            <name>jcenter</name>
+            <id>jcenter</id>
+            <url>https://jcenter.bintray.com/</url>
+        </repository>
 	</repositories>
 
 	<pluginRepositories>

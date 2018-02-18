@@ -1,9 +1,9 @@
-package com.gmaur.investment.robotadvisor
+package com.gmaur.investment.robotadvisor.canary
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
-class RobotAdvisorAppTest {
+class CanaryTest {
     @Test
     fun `canary`() {
         assertThat(true).isEqualTo(true)
