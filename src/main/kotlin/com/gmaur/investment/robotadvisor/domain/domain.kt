@@ -153,6 +153,10 @@ interface RebalancingStrategy {
     fun rebalance(assetAllocation: AssetAllocation, portfolio: Portfolio): Operations
 }
 
+/**
+ * Fixed mode: all transferrable assets are transformed into purchases following the asset allocation.
+ * It does not matter in which state (e.g., percentage) the portfolio is
+ */
 object FixedStrategy : RebalancingStrategy {
     override fun rebalance(assetAllocation: AssetAllocation, portfolio: Portfolio): Operations {
         if (assetAllocation.matches(portfolio)) {
