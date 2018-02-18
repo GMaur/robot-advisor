@@ -7,6 +7,7 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.gmaur.investment.robotadvisor.domain.AssetAllocation
 import com.gmaur.investment.robotadvisor.domain.Portfolio
 import com.gmaur.investment.robotadvisor.domain.PortfolioRebalancer
+import com.gmaur.investment.robotadvisor.infrastructure.OperationMapper
 import com.gmaur.investment.robotadvisor.infrastructure.RebalanceRequest
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
@@ -16,7 +17,6 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @Configuration
@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.*
 class RobotAdvisorApp(private val portfolioRebalancer: PortfolioRebalancer) : ApplicationRunner {
 
     private val mapper: ObjectMapper = ObjectMapper().registerKotlinModule()
+    private val operationMapper: OperationMapper = OperationMapper()
 
     @PostMapping("/rebalance/")
     fun rebalance(@RequestBody rebalanceRequest: RebalanceRequest): Any {
@@ -36,7 +37,7 @@ class RobotAdvisorApp(private val portfolioRebalancer: PortfolioRebalancer) : Ap
                 { it -> Rebalance(it.current, it.ideal) })
         val map = bimap
                 .map { portfolioRebalancer.rebalance(it.ideal, it.current) }
-                .map { serializer.serialize(it) }
+                .map { operationMapper.map(it) }
         val x = map
         val get = x.get()
         return get

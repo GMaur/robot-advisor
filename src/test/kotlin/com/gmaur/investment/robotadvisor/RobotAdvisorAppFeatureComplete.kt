@@ -10,9 +10,7 @@ import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
 import com.gmaur.investment.robotadvisor.RobotAdvisorAppFeatureComplete.RealPortfolioRebalancer
 import com.gmaur.investment.robotadvisor.domain.*
-import com.gmaur.investment.robotadvisor.infrastructure.FileAssetAllocationRepository
-import com.gmaur.investment.robotadvisor.infrastructure.FilePortfolioRepository
-import com.gmaur.investment.robotadvisor.infrastructure.RebalanceRequest
+import com.gmaur.investment.robotadvisor.infrastructure.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.Before
@@ -26,7 +24,6 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringRunner
 import java.math.BigDecimal
-import java.math.BigDecimal.valueOf
 
 @RunWith(SpringRunner::class)
 @ContextConfiguration(classes = [RobotAdvisorApp::class, RealPortfolioRebalancer::class])
@@ -75,16 +72,13 @@ class RobotAdvisorAppFeatureComplete {
                 },
                 { (response, result) ->
                     val get = result.get()
-                    println(get)
-                    assertThat(deserialize(get)).isEqualTo(Operations(listOf()))
                     assertThat(response.statusCode).isEqualTo(200)
                     when (result) {
                         is Result.Success -> {
-                            println(result.value)
                             assertThat(deserialize(result.value)).isEqualTo(
-                                    Operations(listOf(
-                                            Purchase(Asset(ISIN("LU1"), Amount(valueOf(72L)), false)),
-                                            Purchase(Asset(ISIN("LU2"), Amount(valueOf(18L)), false))
+                                    OperationsDTO(listOf(
+                                            OperationDTO(type = "Purchase", asset = AssetDTO("LU1"), amount = AmountDTO("72.00", currency = "EUR")),
+                                            OperationDTO(type = "Purchase", asset = AssetDTO("LU2"), amount = AmountDTO("18.00", currency = "EUR"))
                                     )))
                         }
                         else -> {
@@ -94,9 +88,10 @@ class RobotAdvisorAppFeatureComplete {
                 })
     }
 
-    private fun deserialize(get: String): Operations {
-        return objectMapper.readValue<Operations>(get, Operations::class.java)
+    private fun deserialize(get: String): OperationsDTO {
+        return objectMapper.readValue<OperationsDTO>(get, OperationsDTO::class.java)
     }
+
 
     private fun balancePortfolio(idealDistribution: AssetAllocation, currentDistribution: Portfolio): Either<Exception, Pair<Response, Result<String, FuelError>>> {
         val request = RebalanceRequest(ideal = idealDistribution, current = currentDistribution)

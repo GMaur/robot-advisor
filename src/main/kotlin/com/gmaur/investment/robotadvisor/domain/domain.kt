@@ -9,7 +9,7 @@ import java.util.*
 
 data class Operations(val operations: List<Operation>)
 
-open class Operation(private val asset: Asset) {
+open class Operation(open val asset: Asset) {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -25,10 +25,11 @@ open class Operation(private val asset: Asset) {
     override fun hashCode(): Int {
         return asset.hashCode()
     }
+
 }
 
 // TODO AGB not correct that a purchase does not have an Amount?
-class Purchase(private val asset: Asset) : Operation(asset) {
+class Purchase(override val asset: Asset) : Operation(asset) {
     override fun toString(): String {
         return "Purchase(asset=$asset)"
     }
@@ -80,6 +81,10 @@ data class Amount(val value: BigDecimal) {
 
     fun multiply(percentage: Percentage): Amount {
         return Amount(this.value.multiply(BigDecimal(percentage.value)).setScale(2))
+    }
+
+    fun asString(): String {
+        return this.value.setScale(2).toString()
     }
 }
 
