@@ -8,16 +8,11 @@ import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
-import com.gmaur.investment.robotadvisor.domain.AssetAllocation
-import com.gmaur.investment.robotadvisor.domain.Operations
-import com.gmaur.investment.robotadvisor.domain.Portfolio
 import com.gmaur.investment.robotadvisor.domain.PortfolioRebalancer
-import com.gmaur.investment.robotadvisor.infrastructure.FileAssetAllocationRepository
-import com.gmaur.investment.robotadvisor.infrastructure.FilePortfolioRepository
-import com.gmaur.investment.robotadvisor.infrastructure.RebalanceRequest
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
@@ -26,19 +21,18 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.test.context.ContextConfiguration
+import org.springframework.context.annotation.Import
 import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner::class)
-@ContextConfiguration(classes = [RobotAdvisorApp::class, FakeConfiguration::class])
+@Import(value = [RobotAdvisorAppFeatureMocked.FakeConfiguration::class, RobotAdvisorApp::class])
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Ignore("The portfolioRebalancer is not a mock, therefore cannot verify on top of it")
 class RobotAdvisorAppFeatureMocked {
     @LocalServerPort
     var port: Int? = null
 
-    private val idealRepo: FileAssetAllocationRepository = FileAssetAllocationRepository()
-    private val currentRepo: FilePortfolioRepository = FilePortfolioRepository()
-    private val objectMapper: ObjectMapper
+    private val objectMapper: ObjectMapper = ObjectMapper().registerKotlinModule()
 
     private fun <T> any(): T {
         Mockito.any<T>()
@@ -49,11 +43,6 @@ class RobotAdvisorAppFeatureMocked {
 
     @Autowired
     private lateinit var portfolioRebalancer: PortfolioRebalancer
-
-
-    constructor() {
-        objectMapper = ObjectMapper().registerKotlinModule()
-    }
 
     @Before
     fun setUp() {
@@ -83,16 +72,6 @@ class RobotAdvisorAppFeatureMocked {
         Mockito.verifyZeroInteractions(portfolioRebalancer)
     }
 
-    private fun deserialize(get: String): Operations {
-        return objectMapper.readValue<Operations>(get, Operations::class.java)
-    }
-
-    private fun balancePortfolio(idealDistribution: AssetAllocation, currentDistribution: Portfolio): Either<Exception, Pair<Response, Result<String, FuelError>>> {
-        val request = RebalanceRequest(ideal = idealDistribution, current = currentDistribution)
-        val jsonPayload = serialize(request)
-        return balancePortfolio(jsonPayload)
-    }
-
     private fun balancePortfolio(jsonPayload: String): Either<Exception, Pair<Response, Result<String, FuelError>>> {
         val httpPost = "/rebalance/".httpPost().body(jsonPayload, Charsets.UTF_8).header("Content-Type" to "application/json")
         try {
@@ -105,14 +84,6 @@ class RobotAdvisorAppFeatureMocked {
 
     }
 
-
-    private fun serialize(request: RebalanceRequest): String {
-        val mapper: ObjectMapper = objectMapper
-        return mapper.writeValueAsString(request)
-    }
-
-}
-
 @Configuration
 class FakeConfiguration {
     private val portfolioRebalancer = Mockito.mock(PortfolioRebalancer::class.java)
@@ -121,4 +92,5 @@ class FakeConfiguration {
     fun rebalancer(): PortfolioRebalancer {
         return portfolioRebalancer
     }
+}
 }
