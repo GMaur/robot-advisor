@@ -6,6 +6,12 @@ import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
 
+
+data class AssetAllocationElementDTO(val isin: String, val percentage: String)
+data class AssetAllocationDTO(val listOf: List<AssetAllocationElementDTO>)
+data class PortfolioDTO(val values: List<XDTO>)
+data class XDTO(val asset: AssetDTO, val amount: AmountDTO)
+
 data class OperationsDTO(val operations: List<OperationDTO>)
 data class OperationDTO(val type: String, val asset: AssetDTO, val amount: AmountDTO)
 data class AssetDTO(val isin: String, val transferrable: Boolean)
