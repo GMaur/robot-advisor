@@ -8,14 +8,13 @@ open class PortfolioRebalancer {
             return Operations(listOf())
         }
 
-        val amount = current.assets
+        val totalAmount = current.assets
                 .filter { it is TransferrableAsset }
                 .map { (it as TransferrableAsset).asset.amount }
                 .foldRight(Amount(BigDecimal.ZERO), { a, b ->
                     a.add(b)
                 })
 
-        val isin = (current.assets.first() as Asset).isin
-        return Operations(listOf(Purchase(Asset(isin, amount))))
+        return Operations(ideal.values.map { element -> Purchase(Asset(element.isin, totalAmount.multiply(element.percentage))) })
     }
 }

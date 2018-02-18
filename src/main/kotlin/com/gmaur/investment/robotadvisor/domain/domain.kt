@@ -96,6 +96,10 @@ data class Amount(val value: BigDecimal) {
     fun percentageOf(total: Amount): Percentage {
         return Percentage(this.value.divide(total.value, MathContext(2, RoundingMode.HALF_EVEN)).setScale(2).toString())
     }
+
+    fun multiply(percentage: Percentage): Amount {
+        return Amount(this.value.multiply(BigDecimal(percentage.value)).setScale(2))
+    }
 }
 
 data class ISIN(val value: String)
