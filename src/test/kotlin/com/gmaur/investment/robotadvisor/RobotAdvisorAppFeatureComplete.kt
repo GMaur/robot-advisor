@@ -16,7 +16,6 @@ import org.assertj.core.api.Assertions.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.context.annotation.Bean
@@ -33,13 +32,6 @@ class RobotAdvisorAppFeatureComplete {
     var port: Int? = null
 
     private val objectMapper: ObjectMapper = ObjectMapper().registerKotlinModule()
-
-    private fun <T> any(): T {
-        Mockito.any<T>()
-        return uninitialized()
-    }
-
-    private fun <T> uninitialized(): T = null as T
 
     @Before
     fun setUp() {
