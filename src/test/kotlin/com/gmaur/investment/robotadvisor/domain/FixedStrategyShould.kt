@@ -101,7 +101,7 @@ class FixedStrategyShould {
     }
 
     @Test
-    fun `(fixed mode) rebalance a portfolio with multiple elements in the asset allocation`() {
+    fun `rebalance a portfolio with multiple elements in the asset allocation`() {
         val ideal = AssetAllocation(listOf(
                 AssetAllocationSingle(ISIN("LU1"), Percentage("0.5")),
                 AssetAllocationSingle(ISIN("LU2"), Percentage("0.5"))
