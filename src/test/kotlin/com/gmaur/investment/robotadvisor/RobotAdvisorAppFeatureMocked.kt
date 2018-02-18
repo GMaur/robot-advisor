@@ -27,7 +27,7 @@ import org.springframework.test.context.junit4.SpringRunner
 @RunWith(SpringRunner::class)
 @Import(value = [RobotAdvisorAppFeatureMocked.FakeConfiguration::class, RobotAdvisorApp::class])
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Ignore("The portfolioRebalancer is not a mock, therefore cannot verify on top of it")
+@Ignore("The portfolioRebalancer is not a mock, therefore cannot verify on top of it - see issue #3")
 class RobotAdvisorAppFeatureMocked {
     @LocalServerPort
     var port: Int? = null
