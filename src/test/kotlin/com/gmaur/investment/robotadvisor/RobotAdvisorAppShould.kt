@@ -1,7 +1,7 @@
 package com.gmaur.investment.robotadvisor
 
 import com.gmaur.investment.robotadvisor.domain.PortfolioRebalancer
-import com.gmaur.investment.robotadvisor.infrastructure.OperationMapper
+import com.gmaur.investment.robotadvisor.infrastructure.DomainObjectMapper
 import com.gmaur.investment.robotadvisor.infrastructure.RebalanceRequest
 import com.gmaur.investment.robotadvisor.objectmother.RebalanceRequestObjectMother
 import org.junit.Before
@@ -19,7 +19,7 @@ class RobotAdvisorAppShould {
 
     private var robotAdvisorApp: RobotAdvisorApp? = null
 
-    private val domainMapper: OperationMapper = OperationMapper()
+    private val domainMapper: DomainObjectMapper = DomainObjectMapper()
 
     @Before
     fun setUp() {

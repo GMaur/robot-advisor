@@ -5,7 +5,7 @@ import org.assertj.core.api.SoftAssertions
 import org.junit.Test
 import java.math.BigDecimal
 
-class OperationMapperShould {
+class DomainObjectMapperShould {
     @Test
     fun `convert from domain to DTO`() {
         val ops = Operations(listOf(
@@ -13,7 +13,7 @@ class OperationMapperShould {
                 Purchase(Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(1L)), true))
         ))
 
-        val dtos = OperationMapper().toDTO(ops)
+        val dtos = DomainObjectMapper().toDTO(ops)
 
         var softly = SoftAssertions()
 
@@ -36,7 +36,7 @@ class OperationMapperShould {
         val assetAllocationElementDTO =
                 AssetAllocationDTO(listOf(AssetAllocationElementDTO(isin = "LU1", percentage = "21%")))
 
-        var eitherDomain = OperationMapper().toDomain(assetAllocationElementDTO)
+        var eitherDomain = DomainObjectMapper().toDomain(assetAllocationElementDTO)
 
         var softly = SoftAssertions()
         softly.assertThat(eitherDomain.isRight())
@@ -53,7 +53,7 @@ class OperationMapperShould {
         val portfolioDTO = PortfolioDTO(listOf(
                 XDTO(AssetDTO(isin = "LU1", transferrable = true), amount = AmountDTO.EUR("100"))))
 
-        val domain = OperationMapper().toDomain(portfolioDTO)
+        val domain = DomainObjectMapper().toDomain(portfolioDTO)
 
         var softly = SoftAssertions()
 

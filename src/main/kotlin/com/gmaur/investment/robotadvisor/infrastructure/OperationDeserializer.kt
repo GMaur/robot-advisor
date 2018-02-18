@@ -17,7 +17,7 @@ data class AmountDTO private constructor(val value: String, val currency: String
     }
 }
 
-class OperationMapper {
+class DomainObjectMapper {
     fun toDTO(it: Operations): OperationsDTO {
         return OperationsDTO(
                 it.operations.map { operation ->
