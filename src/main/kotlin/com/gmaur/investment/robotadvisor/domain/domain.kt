@@ -72,19 +72,23 @@ data class Portfolio(val assets: List<Asset>) {
 
 data class Amount(val value: BigDecimal) {
     fun add(amount: Amount): Amount {
-        return Amount(this.value.add(amount.value).setScale(2))
+        return Amount(value.add(amount.value).withScale())
     }
 
     fun percentageOf(total: Amount): Percentage {
-        return Percentage(this.value.divide(total.value, MathContext(2, RoundingMode.HALF_EVEN)).setScale(2).toString())
+        return Percentage(this.value.divide(total.value, MathContext(2, RoundingMode.HALF_EVEN)).withScale().toString())
     }
 
     fun multiply(percentage: Percentage): Amount {
-        return Amount(this.value.multiply(BigDecimal(percentage.value)).setScale(2))
+        return Amount(this.value.multiply(BigDecimal(percentage.value)).withScale())
     }
 
     fun asString(): String {
-        return this.value.setScale(2).toString()
+        return this.value.withScale().toString()
+    }
+
+    private fun BigDecimal.withScale(): BigDecimal {
+        return this.setScale(2)
     }
 }
 
@@ -146,12 +150,16 @@ data class InvalidInvariant(val value: String) : Exception()
 data class AssetAllocationSingle(val isin: ISIN, val percentage: Percentage)
 data class Percentage(val value: String) {
     fun add(other: Percentage): Percentage {
-        val add = BigDecimal(this.value).add(BigDecimal(other.value)).setScale(2)
+        val add = BigDecimal(this.value).add(BigDecimal(other.value)).withScale()
         return Percentage(add.toEngineeringString())
     }
 
     fun greaterThan(percentage: Percentage): Boolean {
         return (BigDecimal(this.value).compareTo(BigDecimal(percentage.value)) == 1)
+    }
+
+    private fun BigDecimal.withScale(): BigDecimal {
+        return this.setScale(2)
     }
 }
 
