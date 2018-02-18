@@ -46,6 +46,5 @@ class OperationMapper {
                     Asset(isin = ISIN(elementDTO.asset.isin), amount = Amount(BigDecimal(elementDTO.amount.value)), transferrable = elementDTO.asset.transferrable)
                 }
         )
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
