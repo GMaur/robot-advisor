@@ -24,6 +24,8 @@ import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringRunner
 
@@ -111,3 +113,12 @@ class RobotAdvisorAppFeatureMocked {
 
 }
 
+@Configuration
+class FakeConfiguration {
+    private val portfolioRebalancer = Mockito.mock(PortfolioRebalancer::class.java)
+
+    @Bean
+    fun rebalancer(): PortfolioRebalancer {
+        return portfolioRebalancer
+    }
+}

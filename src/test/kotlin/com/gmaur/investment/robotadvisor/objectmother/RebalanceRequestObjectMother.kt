@@ -1,4 +1,4 @@
-package com.gmaur.investment.robotadvisor
+package com.gmaur.investment.robotadvisor.objectmother
 
 import com.gmaur.investment.robotadvisor.domain.*
 import com.gmaur.investment.robotadvisor.infrastructure.RebalanceRequest

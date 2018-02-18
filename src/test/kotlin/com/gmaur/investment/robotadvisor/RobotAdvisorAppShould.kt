@@ -2,6 +2,7 @@ package com.gmaur.investment.robotadvisor
 
 import com.gmaur.investment.robotadvisor.domain.PortfolioRebalancer
 import com.gmaur.investment.robotadvisor.infrastructure.RebalanceRequest
+import com.gmaur.investment.robotadvisor.objectmother.RebalanceRequestObjectMother
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
