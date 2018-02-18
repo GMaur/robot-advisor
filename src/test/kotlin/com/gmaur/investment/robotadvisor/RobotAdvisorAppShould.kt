@@ -1,6 +1,7 @@
 package com.gmaur.investment.robotadvisor
 
 import com.gmaur.investment.robotadvisor.domain.PortfolioRebalancer
+import com.gmaur.investment.robotadvisor.infrastructure.OperationMapper
 import com.gmaur.investment.robotadvisor.infrastructure.RebalanceRequest
 import com.gmaur.investment.robotadvisor.objectmother.RebalanceRequestObjectMother
 import org.junit.Before
@@ -17,6 +18,8 @@ class RobotAdvisorAppShould {
     val expectedException: ExpectedException = ExpectedException.none()
 
     private var robotAdvisorApp: RobotAdvisorApp? = null
+
+    private val domainMapper: OperationMapper = OperationMapper()
 
     @Before
     fun setUp() {
@@ -47,7 +50,7 @@ class RobotAdvisorAppShould {
 
         robotAdvisorApp?.rebalance(correctRebalanceRequest.copy(ideal = null))
 
-        Mockito.verify(portfolioRebalancer).rebalance(correctRebalanceRequest.ideal!!, correctRebalanceRequest.current!!)
+        Mockito.verify(portfolioRebalancer).rebalance(domainMapper.toDomain(correctRebalanceRequest.ideal!!).get(), domainMapper.toDomain(correctRebalanceRequest.current!!))
     }
 
     private val correctRebalanceRequest: RebalanceRequest = RebalanceRequestObjectMother.aNew()

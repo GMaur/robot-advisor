@@ -33,7 +33,7 @@ class RobotAdvisorApp(private val portfolioRebalancer: PortfolioRebalancer) : Ap
                 { it -> Rebalance(it.current, it.ideal) })
         val map = bimap
                 .map { portfolioRebalancer.rebalance(it.ideal, it.current) }
-                .map { operationMapper.map(it) }
+                .map { operationMapper.toDTO(it) }
         val x = map
         val get = x.get()
         return get

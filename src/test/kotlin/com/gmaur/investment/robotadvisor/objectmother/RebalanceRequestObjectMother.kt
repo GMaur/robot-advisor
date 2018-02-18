@@ -1,16 +1,15 @@
 package com.gmaur.investment.robotadvisor.objectmother
 
-import com.gmaur.investment.robotadvisor.domain.*
-import com.gmaur.investment.robotadvisor.infrastructure.RebalanceRequest
-import java.math.BigDecimal
+import com.gmaur.investment.robotadvisor.infrastructure.*
 
 class RebalanceRequestObjectMother {
     companion object {
         fun aNew(): RebalanceRequest {
             return RebalanceRequest(
-                    AssetAllocation.aNew(
-                            listOf(AssetAllocationSingle(ISIN("LU1"), Percentage("1")))).get(),
-                    Portfolio(listOf(Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(100L)), false)))
+                    AssetAllocationDTO(listOf(
+                            AssetAllocationElementDTO(isin = "LU1", percentage = "1%"))),
+                    PortfolioDTO(listOf(
+                            XDTO(AssetDTO(isin = "LU1", transferrable = false), amount = AmountDTO.EUR("100"))))
             )
         }
     }
