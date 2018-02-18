@@ -27,14 +27,15 @@ class RobotAdvisorApp(private val portfolioRebalancer: PortfolioRebalancer) : Ap
 
     @PostMapping("/rebalance/")
     fun rebalance(@RequestBody rebalanceRequest: RebalanceRequest): Any {
-        val parse = Rebalance.parse(rebalanceRequest)
-        val bimap = parse.bimap(
+        val requestOrFailure = Rebalance.parse(rebalanceRequest)
+        val rebalance = requestOrFailure.bimap(
                 { it -> throw IllegalArgumentException(it[0].message) },
                 { it -> Rebalance(it.current, it.ideal) })
-        val map = bimap
+                .toOption()
+        val result = rebalance
                 .map { portfolioRebalancer.rebalance(it.ideal, it.current) }
                 .map { domainObjectMapper.toDTO(it) }
-        return map.get()
+        return result.get()
     }
 
     @ExceptionHandler(IllegalArgumentException::class)
