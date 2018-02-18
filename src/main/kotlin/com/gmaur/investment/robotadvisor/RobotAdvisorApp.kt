@@ -36,17 +36,10 @@ class RobotAdvisorApp(private val portfolioRebalancer: PortfolioRebalancer) : Ap
                 { it -> Rebalance(it.current, it.ideal) })
         val map = bimap
                 .map { portfolioRebalancer.rebalance(it.ideal, it.current) }
-        val bimap1 = map.bimap(
-                { ResponseEntity.badRequest() },
-                { it -> it })
-        val x = bimap1
-        if (x.isLeft()) {
-            val left = x.swap().get()
-            return left
-        } else {
-            val get = x.get()
-            return get
-        }
+                .map { serializer.serialize(it) }
+        val x = map
+        val get = x.get()
+        return get
     }
 
     @ExceptionHandler(IllegalArgumentException::class)
