@@ -148,3 +148,25 @@ data class Percentage(val value: String) {
         return Percentage(add.toEngineeringString())
     }
 }
+
+interface RebalancingStrategy {
+    fun rebalance(assetAllocation: AssetAllocation, portfolio: Portfolio): Operations
+}
+
+object FixedStrategy : RebalancingStrategy {
+    override fun rebalance(ideal: AssetAllocation, current: Portfolio): Operations {
+        if (ideal.matches(current)) {
+            return Operations(listOf())
+        }
+
+        val totalAmount = current.assets
+                .filter { it is TransferrableAsset }
+                .map { (it as TransferrableAsset).asset.amount }
+                .foldRight(Amount(BigDecimal.ZERO), { a, b ->
+                    a.add(b)
+                })
+
+        return Operations(ideal.values.map { element -> Purchase(Asset(element.isin, totalAmount.multiply(element.percentage))) })
+    }
+
+}

@@ -5,7 +5,7 @@ import org.junit.Test
 import java.math.BigDecimal
 
 class PortfolioRebalancerShould {
-    private val portfolioRebalancer = PortfolioRebalancer()
+    private val portfolioRebalancer = PortfolioRebalancer(FixedStrategy)
 
     @Test
     fun `not rebalance a portfolio that is correct already`() {
@@ -120,3 +120,4 @@ class PortfolioRebalancerShould {
         )))
     }
 }
+
