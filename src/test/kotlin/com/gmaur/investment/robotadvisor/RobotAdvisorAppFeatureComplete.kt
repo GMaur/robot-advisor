@@ -74,17 +74,12 @@ class RobotAdvisorAppFeatureComplete {
                 })
     }
 
-    private fun deserialize(get: String): OperationsDTO {
-        return objectMapper.readValue<OperationsDTO>(get, OperationsDTO::class.java)
-    }
-
-
     private fun balancePortfolio(idealDistribution: AssetAllocation, currentDistribution: Portfolio): Either<Exception, Pair<Response, Result<String, FuelError>>> {
         val request = RebalanceRequest(ideal = idealDistribution, current = currentDistribution)
         val jsonPayload = serialize(request)
         return balancePortfolio(jsonPayload)
     }
-
+    
     private fun balancePortfolio(jsonPayload: String): Either<Exception, Pair<Response, Result<String, FuelError>>> {
         val httpPost = "/rebalance/".httpPost().body(jsonPayload, Charsets.UTF_8).header("Content-Type" to "application/json")
         try {
@@ -97,10 +92,14 @@ class RobotAdvisorAppFeatureComplete {
 
     }
 
-
     private fun serialize(request: RebalanceRequest): String {
         val mapper: ObjectMapper = objectMapper
         return mapper.writeValueAsString(request)
+    }
+
+
+    private fun deserialize(get: String): OperationsDTO {
+        return objectMapper.readValue<OperationsDTO>(get, OperationsDTO::class.java)
     }
 
     @Configuration
