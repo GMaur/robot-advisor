@@ -1,7 +1,6 @@
 package com.gmaur.investment.robotadvisor.domain
 
 import arrow.core.Either
-import com.gmaur.investment.robotadvisor.domain.Portfolio.Companion.asAsset
 import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
@@ -46,20 +45,11 @@ class Transfer(private val asset: Asset) : Operation(asset) {
     }
 }
 
-//TODO AGB Type union?
-//TODO AGB make it typesafe
-data class Portfolio(val assets: List<Any>) {
+data class Portfolio(val assets: List<Asset>) {
     fun total(): Amount {
-        val amounts = assets.map { it ->
-            if (it is Asset) {
-                it.amount
-            } else if (it is TransferrableAsset) {
-                it.asset.amount
-            } else {
-                throw IllegalArgumentException()
-            }
-        }
-        return amounts.fold(
+        return assets
+                .map(Asset::amount)
+                .fold(
                 Amount(BigDecimal.valueOf(0)),
                 { amount, other -> amount.add(other) }
         )
@@ -67,7 +57,7 @@ data class Portfolio(val assets: List<Any>) {
 
     fun groupBy(): GroupedAmounts {
         val temp: HashMap<ISIN, Amount> = HashMap()
-        for (asset in asAsset(this.assets)) {
+        for (asset in this.assets) {
             temp[asset.isin] = temp.getOrDefault(asset.isin, Amount(BigDecimal.valueOf(0))).add(asset.amount)
         }
         return GroupedAmounts(temp)
@@ -79,19 +69,10 @@ data class Portfolio(val assets: List<Any>) {
         }
     }
 
-    companion object {
-        fun asAsset(x: List<Any>): List<Asset> {
-            val assets = x.filter {
-                it is Asset
-            }.map { it as Asset }
-            return assets
-        }
-    }
-
     fun totalTransferrableAmount(): Amount {
         val result = this.assets
-                .filter { it is TransferrableAsset }
-                .map { (it as TransferrableAsset).asset.amount }
+                .filter { it.transferrable }
+                .map { it.amount }
                 .foldRight(Amount(BigDecimal.ZERO), { a, b ->
                     a.add(b)
                 })
@@ -115,8 +96,7 @@ data class Amount(val value: BigDecimal) {
 
 data class ISIN(val value: String)
 
-data class Asset(val isin: ISIN, val amount: Amount)
-data class TransferrableAsset(val asset: Asset)
+data class Asset(val isin: ISIN, val amount: Amount, val transferrable: Boolean)
 data class AssetAllocation private constructor(val values: List<AssetAllocationSingle>) {
     companion object {
         fun aNew(values: List<AssetAllocationSingle>): Either<Exception, AssetAllocation> {
@@ -135,12 +115,11 @@ data class AssetAllocation private constructor(val values: List<AssetAllocationS
         }
     }
     fun matches(portfolio: Portfolio): Boolean {
-        val assets = asAsset(portfolio.assets)
         val total = portfolio.total()
         val groupedAmounts = portfolio.groupBy()
         val groupedPercentages = this.groupBy()
         //TODO AGB need to assert on teh amount of groupedAmounts = grouped assets
-        for (asset in assets) {
+        for (asset in portfolio.assets) {
             val assetExists = groupedAmounts.get(asset.isin) != null
             if (!assetExists) {
                 return false
@@ -202,6 +181,6 @@ object FixedStrategy : RebalancingStrategy {
     }
 
     private fun toPurchase(totalAmount: Amount) =
-            { element: AssetAllocationSingle -> Purchase(Asset(element.isin, totalAmount.multiply(element.percentage))) }
+            { element: AssetAllocationSingle -> Purchase(Asset(element.isin, totalAmount.multiply(element.percentage), false)) }
 
 }

@@ -8,8 +8,8 @@ class PortfolioShould {
     @Test
     fun `add all amounts`() {
         var total = Portfolio(listOf(
-                Asset(ISIN(""), Amount(BigDecimal.valueOf(1))),
-                Asset(ISIN(""), Amount(BigDecimal.valueOf(1)))
+                Asset(ISIN(""), Amount(BigDecimal.valueOf(1)), false),
+                Asset(ISIN(""), Amount(BigDecimal.valueOf(1)), false)
         )).total()
 
         assertThat(total).isEqualTo(Amount(BigDecimal("2.00")))
@@ -18,8 +18,8 @@ class PortfolioShould {
     @Test
     fun `add all amounts, with decimals`() {
         var total = Portfolio(listOf(
-                Asset(ISIN(""), Amount(BigDecimal("1.1"))),
-                Asset(ISIN(""), Amount(BigDecimal("0.9")))
+                Asset(ISIN(""), Amount(BigDecimal("1.1")), false),
+                Asset(ISIN(""), Amount(BigDecimal("0.9")), false)
         )).total()
 
         assertThat(total.value.subtract(BigDecimal.valueOf(2))).isEqualTo(BigDecimal("0.00"))

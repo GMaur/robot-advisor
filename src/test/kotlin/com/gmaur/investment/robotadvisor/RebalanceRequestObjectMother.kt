@@ -10,7 +10,7 @@ class RebalanceRequestObjectMother {
             return RebalanceRequest(
                     AssetAllocation.aNew(
                             listOf(AssetAllocationSingle(ISIN("LU1"), Percentage("1")))).get(),
-                    Portfolio(listOf(Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(100L)))))
+                    Portfolio(listOf(Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(100L)), false)))
             )
         }
     }

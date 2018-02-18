@@ -10,7 +10,7 @@ class FixedStrategyShould {
     @Test
     fun `not rebalance a portfolio that is correct already`() {
         val ideal = AssetAllocation.aNew(listOf(AssetAllocationSingle(ISIN("LU1"), Percentage("1")))).get()
-        val current = Portfolio(listOf(Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(100L)))))
+        val current = Portfolio(listOf(Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(100L)), false)))
 
 
         val rebalance = strategy.rebalance(ideal, current)
@@ -25,9 +25,9 @@ class FixedStrategyShould {
                 AssetAllocationSingle(ISIN("LU1"), Percentage("0.5"))
         )).get()
         val current = Portfolio(listOf(
-                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L))),
-                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L))),
-                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L)))
+                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L)), false),
+                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L)), false),
+                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L)), false)
         ))
 
         val rebalance = strategy.rebalance(ideal, current)
@@ -41,9 +41,9 @@ class FixedStrategyShould {
                 AssetAllocationSingle(ISIN("LU1"), Percentage("1"))
         )).get()
         val current = Portfolio(listOf(
-                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L))),
-                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L))),
-                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L)))
+                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L)), false),
+                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L)), false),
+                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L)), false)
         ))
 
         val rebalance = strategy.rebalance(ideal, current)
@@ -58,8 +58,8 @@ class FixedStrategyShould {
                 AssetAllocationSingle(ISIN("LU1"), Percentage("0.6"))
         )).get()
         val current = Portfolio(listOf(
-                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(60L))),
-                Asset(ISIN("LU2"), Amount(BigDecimal.valueOf(40L)))
+                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(60L)), false),
+                Asset(ISIN("LU2"), Amount(BigDecimal.valueOf(40L)), false)
         ))
 
         val rebalance = strategy.rebalance(ideal, current)
@@ -74,8 +74,8 @@ class FixedStrategyShould {
                 AssetAllocationSingle(ISIN("LU2"), Percentage("0.4"))
         )).get()
         val current = Portfolio(listOf(
-                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(60L))),
-                Asset(ISIN("LU2"), Amount(BigDecimal.valueOf(40L)))
+                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(60L)), false),
+                Asset(ISIN("LU2"), Amount(BigDecimal.valueOf(40L)), false)
         ))
 
         val rebalance = strategy.rebalance(ideal, current)
@@ -90,14 +90,14 @@ class FixedStrategyShould {
                 AssetAllocationSingle(ISIN("LU1"), Percentage("1"))
         )).get()
         val current = Portfolio(listOf(
-                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(60L))),
-                TransferrableAsset(Asset(ISIN("LU2"), Amount(BigDecimal.valueOf(40L)))),
-                TransferrableAsset(Asset(ISIN("LU2"), Amount(BigDecimal.valueOf(40L))))
+                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(60L)), false),
+                Asset(ISIN("LU2"), Amount(BigDecimal.valueOf(40L)), true),
+                Asset(ISIN("LU2"), Amount(BigDecimal.valueOf(40L)), true)
         ))
 
         val rebalance = strategy.rebalance(ideal, current)
 
-        assertThat(rebalance).isEqualTo(Operations(listOf(Purchase(Asset(ISIN("LU1"), Amount(BigDecimal("80.00")))))))
+        assertThat(rebalance).isEqualTo(Operations(listOf(Purchase(Asset(ISIN("LU1"), Amount(BigDecimal("80.00")), false)))))
     }
 
     @Test
@@ -107,16 +107,16 @@ class FixedStrategyShould {
                 AssetAllocationSingle(ISIN("LU2"), Percentage("0.5"))
         )).get()
         val current = Portfolio(listOf(
-                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(60L))),
-                TransferrableAsset(Asset(ISIN(""), Amount(BigDecimal.valueOf(40L)))),
-                TransferrableAsset(Asset(ISIN(""), Amount(BigDecimal.valueOf(40L))))
+                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(60L)), false),
+                Asset(ISIN(""), Amount(BigDecimal.valueOf(40L)), true),
+                Asset(ISIN(""), Amount(BigDecimal.valueOf(40L)), true)
         ))
 
         val rebalance = strategy.rebalance(ideal, current)
 
         assertThat(rebalance).isEqualTo(Operations(listOf(
-                Purchase(Asset(ISIN("LU1"), Amount(BigDecimal("40.00")))),
-                Purchase(Asset(ISIN("LU2"), Amount(BigDecimal("40.00"))))
+                Purchase(Asset(ISIN("LU1"), Amount(BigDecimal("40.00")), false)),
+                Purchase(Asset(ISIN("LU2"), Amount(BigDecimal("40.00")), false))
         )))
     }
 
@@ -128,17 +128,17 @@ class FixedStrategyShould {
                 AssetAllocationSingle(ISIN("LU3"), Percentage("0.2"))
         )).get()
         val current = Portfolio(listOf(
-                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(60L))),
-                TransferrableAsset(Asset(ISIN(""), Amount(BigDecimal.valueOf(40L)))),
-                TransferrableAsset(Asset(ISIN(""), Amount(BigDecimal.valueOf(40L))))
+                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(60L)), false),
+                Asset(ISIN(""), Amount(BigDecimal.valueOf(40L)), true),
+                Asset(ISIN(""), Amount(BigDecimal.valueOf(40L)), true)
         ))
 
         val rebalance = strategy.rebalance(ideal, current)
 
         assertThat(rebalance).isEqualTo(Operations(listOf(
-                Purchase(Asset(ISIN("LU1"), Amount(BigDecimal("32.00")))),
-                Purchase(Asset(ISIN("LU2"), Amount(BigDecimal("32.00")))),
-                Purchase(Asset(ISIN("LU3"), Amount(BigDecimal("16.00"))))
+                Purchase(Asset(ISIN("LU1"), Amount(BigDecimal("32.00")), false)),
+                Purchase(Asset(ISIN("LU2"), Amount(BigDecimal("32.00")), false)),
+                Purchase(Asset(ISIN("LU3"), Amount(BigDecimal("16.00")), false))
         )))
     }
 }

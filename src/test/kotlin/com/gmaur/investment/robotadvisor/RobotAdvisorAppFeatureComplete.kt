@@ -61,9 +61,9 @@ class RobotAdvisorAppFeatureComplete {
                 AssetAllocationSingle(ISIN("LU1"), Percentage(".80")),
                 AssetAllocationSingle(ISIN("LU2"), Percentage(".20")))).get()
         val currentPortfolio = Portfolio(listOf(
-                Asset(ISIN("LU1"), Amount(BigDecimal("8"))),
-                Asset(ISIN("LU2"), Amount(BigDecimal("2"))),
-                TransferrableAsset(Asset(ISIN("LU2"), Amount(BigDecimal("90"))))
+                Asset(ISIN("LU1"), Amount(BigDecimal("8")), false),
+                Asset(ISIN("LU2"), Amount(BigDecimal("2")), false),
+                Asset(ISIN("LU2"), Amount(BigDecimal("90")), true)
         ))
 
         val response = balancePortfolio(assetAllocation, currentPortfolio)
@@ -83,8 +83,8 @@ class RobotAdvisorAppFeatureComplete {
                             println(result.value)
                             assertThat(deserialize(result.value)).isEqualTo(
                                     Operations(listOf(
-                                            Purchase(Asset(ISIN("LU1"), Amount(valueOf(72L)))),
-                                            Purchase(Asset(ISIN("LU2"), Amount(valueOf(18L))))
+                                            Purchase(Asset(ISIN("LU1"), Amount(valueOf(72L)), false)),
+                                            Purchase(Asset(ISIN("LU2"), Amount(valueOf(18L)), false))
                                     )))
                         }
                         else -> {
