@@ -27,21 +27,9 @@ open class Operation(private val asset: Asset) {
     }
 }
 
-class Sell(private val asset: Asset) : Operation(asset) {
-    override fun toString(): String {
-        return "Sell(asset=$asset)"
-    }
-}
-
 class Purchase(private val asset: Asset) : Operation(asset) {
     override fun toString(): String {
         return "Purchase(asset=$asset)"
-    }
-}
-
-class Transfer(private val asset: Asset) : Operation(asset) {
-    override fun toString(): String {
-        return "Transfer(asset=$asset)"
     }
 }
 
