@@ -32,9 +32,7 @@ class RobotAdvisorAppFeatureComplete {
     @LocalServerPort
     var port: Int? = null
 
-    private val idealRepo: FileAssetAllocationRepository = FileAssetAllocationRepository()
-    private val currentRepo: FilePortfolioRepository = FilePortfolioRepository()
-    private val objectMapper: ObjectMapper
+    private val objectMapper: ObjectMapper = ObjectMapper().registerKotlinModule()
 
     private fun <T> any(): T {
         Mockito.any<T>()
@@ -42,10 +40,6 @@ class RobotAdvisorAppFeatureComplete {
     }
 
     private fun <T> uninitialized(): T = null as T
-
-    constructor() {
-        objectMapper = ObjectMapper().registerKotlinModule()
-    }
 
     @Before
     fun setUp() {
