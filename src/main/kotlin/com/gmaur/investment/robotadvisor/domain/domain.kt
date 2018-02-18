@@ -27,6 +27,7 @@ open class Operation(private val asset: Asset) {
     }
 }
 
+// TODO AGB not correct that a purchase does not have an Amount?
 class Purchase(private val asset: Asset) : Operation(asset) {
     override fun toString(): String {
         return "Purchase(asset=$asset)"
