@@ -170,7 +170,10 @@ object FixedStrategy : RebalancingStrategy {
                     a.add(b)
                 })
 
-        return Operations(assetAllocation.values.map { element -> Purchase(Asset(element.isin, totalAmount.multiply(element.percentage))) })
+        return Operations(assetAllocation.values.map(toPurchase(totalAmount)))
     }
+
+    private fun toPurchase(totalAmount: Amount) =
+            { element: AssetAllocationSingle -> Purchase(Asset(element.isin, totalAmount.multiply(element.percentage))) }
 
 }
