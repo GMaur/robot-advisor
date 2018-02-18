@@ -173,13 +173,9 @@ object FixedStrategy : RebalancingStrategy {
             return Operations(listOf())
         }
 
-        val totalAmount = totalTransferrableAmount(portfolio)
+        val totalAmount = portfolio.totalTransferrableAmount()
 
         return Operations(assetAllocation.values.map(toPurchase(totalAmount)))
-    }
-
-    private fun totalTransferrableAmount(portfolio: Portfolio): Amount {
-        return portfolio.totalTransferrableAmount()
     }
 
     private fun toPurchase(totalAmount: Amount) =
