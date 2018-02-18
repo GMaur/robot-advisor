@@ -13,4 +13,11 @@ class PercentageShould {
     fun `add percentages without decimals`() {
         assertThat(Percentage("1").add(Percentage("1"))).isEqualTo(Percentage("2.00"))
     }
+
+    @Test
+    fun `allow for values bigger than 1 or 100%`() {
+        assertThat(Percentage("10")).isEqualTo(Percentage("10")) // 1000%
+        assertThat(Percentage("100")).isEqualTo(Percentage("100")) // 10000%
+    }
+
 }

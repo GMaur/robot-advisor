@@ -9,7 +9,7 @@ class FixedStrategyShould {
 
     @Test
     fun `not rebalance a portfolio that is correct already`() {
-        val ideal = AssetAllocation(listOf(AssetAllocationSingle(ISIN("LU1"), Percentage("1"))))
+        val ideal = AssetAllocation.aNew(listOf(AssetAllocationSingle(ISIN("LU1"), Percentage("1")))).get()
         val current = Portfolio(listOf(Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(100L)))))
 
 
@@ -20,10 +20,10 @@ class FixedStrategyShould {
 
     @Test
     fun `not rebalance a portfolio that is correct already, with several assets - repeated allocation cases)`() {
-        val ideal = AssetAllocation(listOf(
+        val ideal = AssetAllocation.aNew(listOf(
                 AssetAllocationSingle(ISIN("LU1"), Percentage("0.5")),
                 AssetAllocationSingle(ISIN("LU1"), Percentage("0.5"))
-        ))
+        )).get()
         val current = Portfolio(listOf(
                 Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L))),
                 Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L))),
@@ -37,9 +37,9 @@ class FixedStrategyShould {
 
     @Test
     fun `not rebalance a portfolio that is correct already, with several assets - no repeated allocation cases`() {
-        val ideal = AssetAllocation(listOf(
+        val ideal = AssetAllocation.aNew(listOf(
                 AssetAllocationSingle(ISIN("LU1"), Percentage("1"))
-        ))
+        )).get()
         val current = Portfolio(listOf(
                 Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L))),
                 Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L))),
@@ -53,10 +53,10 @@ class FixedStrategyShould {
 
     @Test
     fun `not rebalance a portfolio that is correct already, with several assets and the allocation is composed by several`() {
-        val ideal = AssetAllocation(listOf(
+        val ideal = AssetAllocation.aNew(listOf(
                 AssetAllocationSingle(ISIN("LU2"), Percentage("0.4")),
                 AssetAllocationSingle(ISIN("LU1"), Percentage("0.6"))
-        ))
+        )).get()
         val current = Portfolio(listOf(
                 Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(60L))),
                 Asset(ISIN("LU2"), Amount(BigDecimal.valueOf(40L)))
@@ -69,10 +69,10 @@ class FixedStrategyShould {
 
     @Test
     fun `not rebalance a portfolio that is correct already, with several assets and the allocation is composed by several, order does not matter`() {
-        val ideal = AssetAllocation(listOf(
+        val ideal = AssetAllocation.aNew(listOf(
                 AssetAllocationSingle(ISIN("LU1"), Percentage("0.6")),
                 AssetAllocationSingle(ISIN("LU2"), Percentage("0.4"))
-        ))
+        )).get()
         val current = Portfolio(listOf(
                 Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(60L))),
                 Asset(ISIN("LU2"), Amount(BigDecimal.valueOf(40L)))
@@ -86,9 +86,9 @@ class FixedStrategyShould {
 
     @Test
     fun `rebalance a portfolio with a single element in the asset allocation`() {
-        val ideal = AssetAllocation(listOf(
+        val ideal = AssetAllocation.aNew(listOf(
                 AssetAllocationSingle(ISIN("LU1"), Percentage("1"))
-        ))
+        )).get()
         val current = Portfolio(listOf(
                 Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(60L))),
                 TransferrableAsset(Asset(ISIN("LU2"), Amount(BigDecimal.valueOf(40L)))),
@@ -102,10 +102,10 @@ class FixedStrategyShould {
 
     @Test
     fun `rebalance a portfolio with multiple elements in the asset allocation`() {
-        val ideal = AssetAllocation(listOf(
+        val ideal = AssetAllocation.aNew(listOf(
                 AssetAllocationSingle(ISIN("LU1"), Percentage("0.5")),
                 AssetAllocationSingle(ISIN("LU2"), Percentage("0.5"))
-        ))
+        )).get()
         val current = Portfolio(listOf(
                 Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(60L))),
                 TransferrableAsset(Asset(ISIN(""), Amount(BigDecimal.valueOf(40L)))),
@@ -122,11 +122,11 @@ class FixedStrategyShould {
 
     @Test
     fun `rebalance a portfolio with three elements in the asset allocation`() {
-        val ideal = AssetAllocation(listOf(
+        val ideal = AssetAllocation.aNew(listOf(
                 AssetAllocationSingle(ISIN("LU1"), Percentage("0.4")),
                 AssetAllocationSingle(ISIN("LU2"), Percentage("0.4")),
                 AssetAllocationSingle(ISIN("LU3"), Percentage("0.2"))
-        ))
+        )).get()
         val current = Portfolio(listOf(
                 Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(60L))),
                 TransferrableAsset(Asset(ISIN(""), Amount(BigDecimal.valueOf(40L)))),

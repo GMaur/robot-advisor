@@ -8,7 +8,10 @@ import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
-import com.gmaur.investment.robotadvisor.domain.*
+import com.gmaur.investment.robotadvisor.domain.AssetAllocation
+import com.gmaur.investment.robotadvisor.domain.Operations
+import com.gmaur.investment.robotadvisor.domain.Portfolio
+import com.gmaur.investment.robotadvisor.domain.PortfolioRebalancer
 import com.gmaur.investment.robotadvisor.infrastructure.FileAssetAllocationRepository
 import com.gmaur.investment.robotadvisor.infrastructure.FilePortfolioRepository
 import com.gmaur.investment.robotadvisor.infrastructure.RebalanceRequest
@@ -18,18 +21,16 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
-import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringRunner
-import java.math.BigDecimal.valueOf
 
 @RunWith(SpringRunner::class)
 @ContextConfiguration(classes = [RobotAdvisorApp::class, FakeConfiguration::class])
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class RobotAdvisorAppFeature {
+class RobotAdvisorAppFeatureMocked {
     @LocalServerPort
     var port: Int? = null
 
@@ -55,40 +56,6 @@ class RobotAdvisorAppFeature {
     @Before
     fun setUp() {
         FuelManager.instance.basePath = "http://localhost:" + port!!
-    }
-
-    @Test
-    fun `balances a portfolio comparing to the ideal distribution`() {
-        val assetAllocation = idealRepo.read()
-        val currentPortfolio = currentRepo.read()
-
-        val response = balancePortfolio(assetAllocation, currentPortfolio)
-
-        assertThat(response.isRight())
-        response.bimap(
-                {
-                    fail("expected a right")
-                },
-                { (response, result) ->
-                    assertThat(deserialize(result.get())).isEqualTo(Operations(listOf()))
-                    assertThat(response.statusCode).isEqualTo(200)
-                    when (result) {
-                        is Result.Success -> {
-                            println(result.value)
-                            assertThat(deserialize(result.value)).isEqualTo(
-                                    Operations(listOf(
-                                            Purchase(Asset(ISIN("LU1"), Amount(valueOf(72L)))),
-                                            Purchase(Asset(ISIN("LU2"), Amount(valueOf(18L))))
-                                    )))
-                        }
-                        else -> {
-                            fail("expected a Result.success")
-                        }
-                    }
-                })
-        verify(portfolioRebalancer).rebalance(assetAllocation, currentPortfolio)
-        // TODO AGB investigate how to argumentMatch anyOf(AssetAllocation)
-        Mockito.verifyNoMoreInteractions(portfolioRebalancer)
     }
 
     @Test

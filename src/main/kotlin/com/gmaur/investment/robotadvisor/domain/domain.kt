@@ -1,5 +1,6 @@
 package com.gmaur.investment.robotadvisor.domain
 
+import arrow.core.Either
 import com.gmaur.investment.robotadvisor.domain.Portfolio.Companion.asAsset
 import java.math.BigDecimal
 import java.math.MathContext
@@ -116,7 +117,23 @@ data class ISIN(val value: String)
 
 data class Asset(val isin: ISIN, val amount: Amount)
 data class TransferrableAsset(val asset: Asset)
-data class AssetAllocation(val values: List<AssetAllocationSingle>) {
+data class AssetAllocation private constructor(val values: List<AssetAllocationSingle>) {
+    companion object {
+        fun aNew(values: List<AssetAllocationSingle>): Either<Exception, AssetAllocation> {
+            val totalPercentage = sum(values)
+            if (totalPercentage.greaterThan(Percentage("1"))) {
+                return Either.left(InvalidInvariant("Asset Allocation percentage exceeds 100%"))
+            } else {
+                return Either.right(AssetAllocation(values))
+            }
+        }
+
+        private fun sum(values: List<AssetAllocationSingle>): Percentage {
+            return values.foldRight(Percentage("0"), { a, b ->
+                a.percentage.add(b)
+            })
+        }
+    }
     fun matches(portfolio: Portfolio): Boolean {
         val assets = asAsset(portfolio.assets)
         val total = portfolio.total()
@@ -151,11 +168,17 @@ data class AssetAllocation(val values: List<AssetAllocationSingle>) {
     }
 }
 
+data class InvalidInvariant(val value: String) : Exception()
+
 data class AssetAllocationSingle(val isin: ISIN, val percentage: Percentage)
 data class Percentage(val value: String) {
     fun add(other: Percentage): Percentage {
         val add = BigDecimal(this.value).add(BigDecimal(other.value)).setScale(2)
         return Percentage(add.toEngineeringString())
+    }
+
+    fun greaterThan(percentage: Percentage): Boolean {
+        return (BigDecimal(this.value).compareTo(BigDecimal(percentage.value)) == 1)
     }
 }
 

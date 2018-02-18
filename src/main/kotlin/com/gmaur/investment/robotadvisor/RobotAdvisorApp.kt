@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.gmaur.investment.robotadvisor.domain.AssetAllocation
-import com.gmaur.investment.robotadvisor.domain.Operations
 import com.gmaur.investment.robotadvisor.domain.Portfolio
 import com.gmaur.investment.robotadvisor.domain.PortfolioRebalancer
 import com.gmaur.investment.robotadvisor.infrastructure.RebalanceRequest
@@ -17,6 +16,7 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @Configuration
@@ -30,11 +30,23 @@ class RobotAdvisorApp(private val portfolioRebalancer: PortfolioRebalancer) : Ap
 
     @PostMapping("/rebalance/")
     fun rebalance(@RequestBody rebalanceRequest: RebalanceRequest): Any {
-        Rebalance.parse(rebalanceRequest).bimap(
+        val parse = Rebalance.parse(rebalanceRequest)
+        val bimap = parse.bimap(
                 { it -> throw IllegalArgumentException(it[0].message) },
                 { it -> Rebalance(it.current, it.ideal) })
+        val map = bimap
                 .map { portfolioRebalancer.rebalance(it.ideal, it.current) }
-        return Operations(listOf())
+        val bimap1 = map.bimap(
+                { ResponseEntity.badRequest() },
+                { it -> it })
+        val x = bimap1
+        if (x.isLeft()) {
+            val left = x.swap().get()
+            return left
+        } else {
+            val get = x.get()
+            return get
+        }
     }
 
     @ExceptionHandler(IllegalArgumentException::class)

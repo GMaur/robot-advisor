@@ -7,9 +7,9 @@ import com.gmaur.investment.robotadvisor.domain.Percentage
 
 class FileAssetAllocationRepository {
     fun read(): AssetAllocation {
-        return AssetAllocation(listOf(
-                AssetAllocationSingle(ISIN("LU1"), Percentage("80")),
-                AssetAllocationSingle(ISIN("LU2"), Percentage("20"))))
+        return AssetAllocation.aNew(listOf(
+                AssetAllocationSingle(ISIN("LU1"), Percentage(".80")),
+                AssetAllocationSingle(ISIN("LU2"), Percentage(".20")))).get()
     }
 }
 

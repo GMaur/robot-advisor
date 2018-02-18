@@ -8,8 +8,8 @@ class RebalanceRequestObjectMother {
     companion object {
         fun aNew(): RebalanceRequest {
             return RebalanceRequest(
-                    AssetAllocation(
-                            listOf(AssetAllocationSingle(ISIN("LU1"), Percentage("100")))),
+                    AssetAllocation.aNew(
+                            listOf(AssetAllocationSingle(ISIN("LU1"), Percentage("1")))).get(),
                     Portfolio(listOf(Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(100L)))))
             )
         }
