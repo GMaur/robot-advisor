@@ -34,9 +34,7 @@ class RobotAdvisorApp(private val portfolioRebalancer: PortfolioRebalancer) : Ap
         val map = bimap
                 .map { portfolioRebalancer.rebalance(it.ideal, it.current) }
                 .map { domainObjectMapper.toDTO(it) }
-        val x = map
-        val get = x.get()
-        return get
+        return map.get()
     }
 
     @ExceptionHandler(IllegalArgumentException::class)
