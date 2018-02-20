@@ -1,8 +1,6 @@
 package com.gmaur.investment.robotadvisor.infrastructure
 
-import com.fasterxml.jackson.module.kotlin.readValue
 import com.gmaur.investment.robotadvisor.domain.*
-import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.SoftAssertions
 import org.junit.Test
 import java.math.BigDecimal
@@ -69,45 +67,5 @@ class DomainObjectMapperShould {
         softly.assertThat(domain.assets[0].amount).isEqualTo(Amount(BigDecimal.valueOf(100L)))
 
         softly.assertAll()
-    }
-
-
-    @Test
-    fun `parse from the other domain`() {
-        val otherDomainJson = """
-            {
-  "assets" : [ {
-    "isin" : "LU1050469367",
-    "price" : "16.49",
-    "type" : "fund"
-  }, {
-    "isin" : "LU1050470373",
-    "price" : "16.77",
-    "type" : "fund"
-  }, {
-    "isin" : "LU0996177134",
-    "price" : "38.32",
-    "type" : "fund"
-  }, {
-    "isin" : "LU0996182563",
-    "price" : "13.87",
-    "type" : "fund"
-  }, {
-    "value" : "10.24",
-    "type" : "cash"
-  } ]
-}
-"""
-        val dto = mapper.readValue<PortfolioDTO>(otherDomainJson)
-
-        var domain = DomainObjectMapper().toDomain(dto)
-
-        assertThat(domain).isEqualTo(Portfolio(listOf(
-                Asset(ISIN("LU1050469367"), Amount(BigDecimal("16.49")), false),
-                Asset(ISIN("LU1050470373"), Amount(BigDecimal("16.77")), false),
-                Asset(ISIN("LU0996177134"), Amount(BigDecimal("38.32")), false),
-                Asset(ISIN("LU0996182563"), Amount(BigDecimal("13.87")), false),
-                Asset(ISIN(""), Amount(BigDecimal("10.24")), true)
-        )))
     }
 }
