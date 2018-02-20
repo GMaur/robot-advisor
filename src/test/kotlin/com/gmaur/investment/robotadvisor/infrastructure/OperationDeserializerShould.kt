@@ -1,14 +1,13 @@
 package com.gmaur.investment.robotadvisor.infrastructure
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.SoftAssertions
 import org.junit.Test
 
 
 class OperationDeserializerShould {
-    private val objectMapper: ObjectMapper = ObjectMapper().registerKotlinModule()
+    private val objectMapper: ObjectMapper = JSONMapper.aNew()
 
     @Test
     fun `deserialize some purchase orders`() {

@@ -2,9 +2,9 @@ package com.gmaur.investment.robotadvisor
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.gmaur.investment.robotadvisor.domain.PortfolioRebalancer
 import com.gmaur.investment.robotadvisor.infrastructure.DomainObjectMapper
+import com.gmaur.investment.robotadvisor.infrastructure.JSONMapper
 import com.gmaur.investment.robotadvisor.infrastructure.Rebalance
 import com.gmaur.investment.robotadvisor.infrastructure.RebalanceRequest
 import org.springframework.boot.ApplicationArguments
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class RobotAdvisorApp(private val portfolioRebalancer: PortfolioRebalancer) : ApplicationRunner {
 
-    private val mapper: ObjectMapper = ObjectMapper().registerKotlinModule()
+    private val mapper: ObjectMapper = JSONMapper.aNew()
     private val domainObjectMapper: DomainObjectMapper = DomainObjectMapper()
 
     @PostMapping("/rebalance/")

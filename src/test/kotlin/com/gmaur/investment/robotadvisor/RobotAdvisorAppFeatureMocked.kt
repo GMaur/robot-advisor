@@ -2,13 +2,13 @@ package com.gmaur.investment.robotadvisor
 
 import arrow.core.Either
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
 import com.gmaur.investment.robotadvisor.domain.PortfolioRebalancer
+import com.gmaur.investment.robotadvisor.infrastructure.JSONMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.Before
@@ -32,7 +32,7 @@ class RobotAdvisorAppFeatureMocked {
     @LocalServerPort
     var port: Int? = null
 
-    private val objectMapper: ObjectMapper = ObjectMapper().registerKotlinModule()
+    private val objectMapper: ObjectMapper = JSONMapper.aNew()
 
     private fun <T> any(): T {
         Mockito.any<T>()

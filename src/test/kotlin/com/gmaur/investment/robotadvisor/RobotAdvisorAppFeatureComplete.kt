@@ -2,7 +2,6 @@ package com.gmaur.investment.robotadvisor
 
 import arrow.core.Either
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Response
@@ -31,7 +30,7 @@ class RobotAdvisorAppFeatureComplete {
     @LocalServerPort
     var port: Int? = null
 
-    private val objectMapper: ObjectMapper = ObjectMapper().registerKotlinModule()
+    private val objectMapper: ObjectMapper = JSONMapper.aNew()
 
     @Before
     fun setUp() {
