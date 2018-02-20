@@ -31,7 +31,7 @@ class DomainObjectMapper {
 
     fun toDomain(dto: PortfolioDTO): Portfolio {
         return Portfolio(
-                dto.values.map { elementDTO ->
+                dto.assets.map { elementDTO ->
                     Asset(isin = ISIN(elementDTO.asset.isin), amount = Amount(BigDecimal(elementDTO.amount.value)), transferrable = elementDTO.asset.transferrable)
                 }
         )

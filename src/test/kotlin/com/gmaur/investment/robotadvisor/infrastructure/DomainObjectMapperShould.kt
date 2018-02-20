@@ -1,16 +1,52 @@
 package com.gmaur.investment.robotadvisor.infrastructure
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.core.TreeNode
+import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer
+import com.fasterxml.jackson.databind.module.SimpleModule
+import com.fasterxml.jackson.databind.node.TextNode
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.gmaur.investment.robotadvisor.domain.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.SoftAssertions
 import org.junit.Test
+import java.io.IOException
 import java.math.BigDecimal
+
 
 class DomainObjectMapperShould {
 
-    private val mapper = ObjectMapper()
+    private val mapper = jacksonObjectMapper()
+
+    init {
+        val module = SimpleModule()
+        module.addDeserializer(XDTO::class.java, XDeserializer())
+        mapper.registerModule(module)
+    }
+
+    inner class XDeserializer @JvmOverloads constructor(vc: Class<*>? = null) : StdDeserializer<XDTO>(vc) {
+
+        @Throws(IOException::class, JsonProcessingException::class)
+        override fun deserialize(jp: JsonParser, ctxt: DeserializationContext): XDTO {
+            val node = jp.codec.readTree<TreeNode>(jp)
+            val result = when (string(node, "type")) {
+                "fund" -> {
+                    XDTO(AssetDTO(isin = string(node, "isin"), transferrable = false), amount = AmountDTO.EUR(string(node, "price")))
+                }
+                "cash" -> {
+                    XDTO(AssetDTO(isin = "", transferrable = true), amount = AmountDTO.EUR(string(node, "value")))
+                }
+                else -> {
+                    throw IllegalArgumentException("type not recognized in: " + node.toString())
+                }
+            }
+            return result
+        }
+
+        private fun string(node: TreeNode, key: String) = (node.get(key) as TextNode).asText()
+    }
 
     @Test
     fun `convert from domain to DTO`() {
@@ -97,7 +133,9 @@ class DomainObjectMapperShould {
   } ]
 }
 """
-        var domain = DomainObjectMapper().toDomain(mapper.readValue<PortfolioDTO>(otherDomainJson))
+        val dto = mapper.readValue<PortfolioDTO>(otherDomainJson, PortfolioDTO::class.java)
+
+        var domain = DomainObjectMapper().toDomain(dto)
 
         assertThat(domain).isEqualTo(Portfolio(listOf(
                 Asset(ISIN("LU1050469367"), Amount(BigDecimal("16.49")), false),
