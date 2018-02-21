@@ -25,12 +25,12 @@ class DomainObjectMapperShould {
         softly.assertThat((dtos.operations[0].asset as XFund).isin).isEqualTo("LU0")
         softly.assertThat(dtos.operations[0].amount.value).isEqualTo("0.00")
         softly.assertThat(dtos.operations[0].amount.currency).isEqualTo("EUR")
-        softly.assertThat(dtos.operations[0].type).isEqualTo("Purchase")
+        softly.assertThat(dtos.operations[0].type).isEqualTo("purchase")
 
         softly.assertThat((dtos.operations[1].asset as XFund).isin).isEqualTo("LU1")
         softly.assertThat(dtos.operations[1].amount.value).isEqualTo("1.00")
         softly.assertThat(dtos.operations[1].amount.currency).isEqualTo("EUR")
-        softly.assertThat(dtos.operations[1].type).isEqualTo("Purchase")
+        softly.assertThat(dtos.operations[1].type).isEqualTo("purchase")
 
         softly.assertAll()
     }

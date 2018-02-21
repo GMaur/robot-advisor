@@ -64,8 +64,8 @@ class RobotAdvisorAppFeatureComplete {
                             println(result.value)
                             assertThat(deserialize(result.value)).isEqualTo(
                                     OperationsDTO(listOf(
-                                            OperationDTO(type = "Purchase", asset = XFund("LU1"), amount = AmountDTO.EUR("72.00")),
-                                            OperationDTO(type = "Purchase", asset = XFund("LU2"), amount = AmountDTO.EUR("18.00"))
+                                            OperationDTO(type = "purchase", asset = XFund("LU1"), amount = AmountDTO.EUR("72.00")),
+                                            OperationDTO(type = "purchase", asset = XFund("LU2"), amount = AmountDTO.EUR("18.00"))
                                     )))
                         }
                         else -> {

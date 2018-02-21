@@ -23,7 +23,7 @@ class DomainObjectMapper {
                         }
                     }
                     OperationDTO(
-                            type = operation.javaClass.simpleName,
+                            type = operation.javaClass.simpleName.toLowerCase(),
                             asset = asset,
                             amount = amount
                     )
