@@ -8,20 +8,21 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.node.TextNode
 import com.gmaur.investment.robotadvisor.infrastructure.AmountDTO
 import com.gmaur.investment.robotadvisor.infrastructure.AssetDTO
-import com.gmaur.investment.robotadvisor.infrastructure.XDTO
+import com.gmaur.investment.robotadvisor.infrastructure.CashDTO
+import com.gmaur.investment.robotadvisor.infrastructure.FundDTO
 import java.io.IOException
 
-class XDeserializer @JvmOverloads constructor(vc: Class<*>? = null) : StdDeserializer<XDTO>(vc) {
+class AssetDeserializer @JvmOverloads constructor(vc: Class<*>? = null) : StdDeserializer<AssetDTO>(vc) {
 
     @Throws(IOException::class, JsonProcessingException::class)
-    override fun deserialize(jp: JsonParser, ctxt: DeserializationContext): XDTO {
+    override fun deserialize(jp: JsonParser, ctxt: DeserializationContext): AssetDTO {
         val node = jp.codec.readTree<TreeNode>(jp)
         val result = when (string(node, "type")) {
             "fund" -> {
-                XDTO(AssetDTO(isin = string(node, "isin"), transferrable = false), amount = AmountDTO.EUR(string(node, "price")))
+                FundDTO(isin = string(node, "isin"), amount = AmountDTO.EUR(string(node, "price")))
             }
             "cash" -> {
-                XDTO(AssetDTO(isin = "", transferrable = true), amount = AmountDTO.EUR(string(node, "value")))
+                CashDTO(amount = AmountDTO.EUR(string(node, "value")))
             }
             else -> {
                 throw IllegalArgumentException("type not recognized in: " + node.toString())

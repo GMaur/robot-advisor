@@ -10,7 +10,7 @@ class FixedStrategyShould {
     @Test
     fun `not rebalance a portfolio that is correct already`() {
         val ideal = AssetAllocation.aNew(listOf(AssetAllocationSingle(ISIN("LU1"), Percentage("1")))).get()
-        val current = Portfolio(listOf(Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(100L)), false)))
+        val current = Portfolio(listOf(fund("LU1", 100L)))
 
 
         val rebalance = strategy.rebalance(ideal, current)
@@ -25,9 +25,9 @@ class FixedStrategyShould {
                 AssetAllocationSingle(ISIN("LU1"), Percentage("0.5"))
         )).get()
         val current = Portfolio(listOf(
-                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L)), false),
-                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L)), false),
-                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L)), false)
+                fund("LU1", 50),
+                fund("LU1", 50L),
+                fund("LU1", 50)
         ))
 
         val rebalance = strategy.rebalance(ideal, current)
@@ -37,19 +37,22 @@ class FixedStrategyShould {
 
     @Test
     fun `not rebalance a portfolio that is correct already, with several assets - no repeated allocation cases`() {
+        val isinValue = "LU1"
         val ideal = AssetAllocation.aNew(listOf(
-                AssetAllocationSingle(ISIN("LU1"), Percentage("1"))
+                AssetAllocationSingle(ISIN(isinValue), Percentage("1"))
         )).get()
+        val amountValue = 50L
         val current = Portfolio(listOf(
-                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L)), false),
-                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L)), false),
-                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(50L)), false)
+                fund(isinValue, amountValue),
+                fund(isinValue, amountValue),
+                fund(isinValue, amountValue)
         ))
 
         val rebalance = strategy.rebalance(ideal, current)
 
         assertThat(rebalance).isEqualTo(Operations(listOf()))
     }
+
 
     @Test
     fun `not rebalance a portfolio that is correct already, with several assets and the allocation is composed by several`() {
@@ -58,8 +61,8 @@ class FixedStrategyShould {
                 AssetAllocationSingle(ISIN("LU1"), Percentage("0.6"))
         )).get()
         val current = Portfolio(listOf(
-                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(60L)), false),
-                Asset(ISIN("LU2"), Amount(BigDecimal.valueOf(40L)), false)
+                fund("LU1", 60L),
+                fund("LU2", 40L)
         ))
 
         val rebalance = strategy.rebalance(ideal, current)
@@ -74,8 +77,8 @@ class FixedStrategyShould {
                 AssetAllocationSingle(ISIN("LU2"), Percentage("0.4"))
         )).get()
         val current = Portfolio(listOf(
-                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(60L)), false),
-                Asset(ISIN("LU2"), Amount(BigDecimal.valueOf(40L)), false)
+                fund("LU1", 60L),
+                fund("LU2", 40L)
         ))
 
         val rebalance = strategy.rebalance(ideal, current)
@@ -90,14 +93,15 @@ class FixedStrategyShould {
                 AssetAllocationSingle(ISIN("LU1"), Percentage("1"))
         )).get()
         val current = Portfolio(listOf(
-                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(60L)), false),
-                Asset(ISIN("LU2"), Amount(BigDecimal.valueOf(40L)), true),
-                Asset(ISIN("LU2"), Amount(BigDecimal.valueOf(40L)), true)
+                fund("LU1", 60L),
+                cash(40),
+                cash(40)
         ))
 
         val rebalance = strategy.rebalance(ideal, current)
 
-        assertThat(rebalance).isEqualTo(Operations(listOf(Purchase(Asset(ISIN("LU1"), Amount(BigDecimal("80.00")), false)))))
+        assertThat(rebalance).isEqualTo(Operations(listOf(Purchase(
+                FundDefinition(ISIN("LU1")), Amount(BigDecimal("80.00"))))))
     }
 
     @Test
@@ -107,16 +111,16 @@ class FixedStrategyShould {
                 AssetAllocationSingle(ISIN("LU2"), Percentage("0.5"))
         )).get()
         val current = Portfolio(listOf(
-                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(60L)), false),
-                Asset(ISIN(""), Amount(BigDecimal.valueOf(40L)), true),
-                Asset(ISIN(""), Amount(BigDecimal.valueOf(40L)), true)
+                fund("LU1", 60L),
+                cash(40),
+                cash(40)
         ))
 
         val rebalance = strategy.rebalance(ideal, current)
 
         assertThat(rebalance).isEqualTo(Operations(listOf(
-                Purchase(Asset(ISIN("LU1"), Amount(BigDecimal("40.00")), false)),
-                Purchase(Asset(ISIN("LU2"), Amount(BigDecimal("40.00")), false))
+                fundPurchase("LU1", "40.00"),
+                fundPurchase("LU2", "40.00")
         )))
     }
 
@@ -128,18 +132,30 @@ class FixedStrategyShould {
                 AssetAllocationSingle(ISIN("LU3"), Percentage("0.2"))
         )).get()
         val current = Portfolio(listOf(
-                Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(60L)), false),
-                Asset(ISIN(""), Amount(BigDecimal.valueOf(40L)), true),
-                Asset(ISIN(""), Amount(BigDecimal.valueOf(40L)), true)
+                fund("LU1", 60L),
+                cash(40),
+                cash(40)
         ))
 
         val rebalance = strategy.rebalance(ideal, current)
 
         assertThat(rebalance).isEqualTo(Operations(listOf(
-                Purchase(Asset(ISIN("LU1"), Amount(BigDecimal("32.00")), false)),
-                Purchase(Asset(ISIN("LU2"), Amount(BigDecimal("32.00")), false)),
-                Purchase(Asset(ISIN("LU3"), Amount(BigDecimal("16.00")), false))
+                fundPurchase("LU1", "32.00"),
+                fundPurchase("LU2", "32.00"),
+                fundPurchase("LU3", "16.00")
         )))
+    }
+
+    private fun fundPurchase(isin: String, value: String): Operation {
+        return PurchaseObjectMother.fund(isin, value)
+    }
+
+    private fun fund(isinValue: String, amountValue: Long): Asset {
+        return AssetObjectMother.fund(isinValue, amountValue)
+    }
+
+    private fun cash(amountValue: Long): Asset {
+        return AssetObjectMother.cash(amountValue)
     }
 }
 

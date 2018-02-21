@@ -43,9 +43,9 @@ class RobotAdvisorAppFeatureComplete {
                 AssetAllocationElementDTO(isin = "LU1", percentage = "80%"),
                 AssetAllocationElementDTO(isin = "LU2", percentage = "20%")))
         val currentPortfolio = PortfolioDTO(listOf(
-                XDTO(AssetDTO(isin = "LU1", transferrable = false), amount = AmountDTO.EUR("8")),
-                XDTO(AssetDTO(isin = "LU2", transferrable = false), amount = AmountDTO.EUR("2")),
-                XDTO(AssetDTO(isin = "CASH", transferrable = true), amount = AmountDTO.EUR("90"))))
+                FundDTO(isin = "LU1", amount = AmountDTO.EUR("8")),
+                FundDTO(isin = "LU2", amount = AmountDTO.EUR("2")),
+                CashDTO(amount = AmountDTO.EUR("90"))))
         val jsonPayload = serializeRequest(assetAllocation, currentPortfolio)
         println(jsonPayload)
 
@@ -64,8 +64,8 @@ class RobotAdvisorAppFeatureComplete {
                             println(result.value)
                             assertThat(deserialize(result.value)).isEqualTo(
                                     OperationsDTO(listOf(
-                                            OperationDTO(type = "Purchase", asset = AssetDTO("LU1", false), amount = AmountDTO.EUR("72.00")),
-                                            OperationDTO(type = "Purchase", asset = AssetDTO("LU2", false), amount = AmountDTO.EUR("18.00"))
+                                            OperationDTO(type = "Purchase", asset = XFund("LU1"), amount = AmountDTO.EUR("72.00")),
+                                            OperationDTO(type = "Purchase", asset = XFund("LU2"), amount = AmountDTO.EUR("18.00"))
                                     )))
                         }
                         else -> {

@@ -13,8 +13,8 @@ class DomainObjectMapperShould {
     @Test
     fun `convert from domain to DTO`() {
         val ops = Operations(listOf(
-                Purchase(Asset(ISIN("LU0"), Amount(BigDecimal.valueOf(0L)), false)),
-                Purchase(Asset(ISIN("LU1"), Amount(BigDecimal.valueOf(1L)), true))
+                PurchaseObjectMother.fund("LU0", "0.00"),
+                PurchaseObjectMother.fund("LU1", "1.00")
         ))
 
         val dtos = DomainObjectMapper().toDTO(ops)
@@ -22,12 +22,12 @@ class DomainObjectMapperShould {
         var softly = SoftAssertions()
 
         softly.assertThat(dtos.operations).hasSize(2)
-        softly.assertThat(dtos.operations[0].asset.isin).isEqualTo("LU0")
+        softly.assertThat((dtos.operations[0].asset as XFund).isin).isEqualTo("LU0")
         softly.assertThat(dtos.operations[0].amount.value).isEqualTo("0.00")
         softly.assertThat(dtos.operations[0].amount.currency).isEqualTo("EUR")
         softly.assertThat(dtos.operations[0].type).isEqualTo("Purchase")
 
-        softly.assertThat(dtos.operations[1].asset.isin).isEqualTo("LU1")
+        softly.assertThat((dtos.operations[1].asset as XFund).isin).isEqualTo("LU1")
         softly.assertThat(dtos.operations[1].amount.value).isEqualTo("1.00")
         softly.assertThat(dtos.operations[1].amount.currency).isEqualTo("EUR")
         softly.assertThat(dtos.operations[1].type).isEqualTo("Purchase")
@@ -55,16 +55,16 @@ class DomainObjectMapperShould {
     @Test
     fun `portfolioDTO - convert to domain`() {
         val portfolioDTO = PortfolioDTO(listOf(
-                XDTO(AssetDTO(isin = "LU1", transferrable = true), amount = AmountDTO.EUR("100"))))
+                FundDTO(isin = "LU1", amount = AmountDTO.EUR("100"))))
 
         val domain = DomainObjectMapper().toDomain(portfolioDTO)
 
         var softly = SoftAssertions()
 
         softly.assertThat(domain.assets).hasSize(1)
-        softly.assertThat(domain.assets[0].isin).isEqualTo(ISIN("LU1"))
-        softly.assertThat(domain.assets[0].transferrable).isEqualTo(true)
-        softly.assertThat(domain.assets[0].amount).isEqualTo(Amount(BigDecimal.valueOf(100L)))
+        val firstAsset = domain.assets[0] as FundAsset
+        softly.assertThat(firstAsset.fund.id()).isEqualTo(ISIN("LU1"))
+        softly.assertThat(firstAsset.amount()).isEqualTo(Amount(BigDecimal.valueOf(100L)))
 
         softly.assertAll()
     }

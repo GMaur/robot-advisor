@@ -15,12 +15,14 @@ class OperationDeserializerShould {
             {"operations":[
                 {"type":"Purchase",
                  "asset":{
+                    "type": "fund",
                     "isin": "LU1"},
                  "amount":{
                     "value":"21",
                     "currency":"EUR"}},
                 {"type":"Purchase",
                  "asset":{
+                    "type": "fund",
                     "isin": "LU2"},
                  "amount":{
                     "value":"22",
@@ -32,12 +34,12 @@ class OperationDeserializerShould {
         val softly = SoftAssertions()
         assertThat(operations.operations).hasSize(2)
         assertThat(operations.operations[0].type).isEqualTo("Purchase")
-        assertThat(operations.operations[0].asset.isin).isEqualTo("LU1")
+        assertThat((operations.operations[0].asset as XFund).isin).isEqualTo("LU1")
         assertThat(operations.operations[0].amount.value).isEqualTo("21")
         assertThat(operations.operations[0].amount.currency).isEqualTo("EUR")
 
         assertThat(operations.operations[1].type).isEqualTo("Purchase")
-        assertThat(operations.operations[1].asset.isin).isEqualTo("LU2")
+        assertThat((operations.operations[1].asset as XFund).isin).isEqualTo("LU2")
         assertThat(operations.operations[1].amount.value).isEqualTo("22")
         assertThat(operations.operations[1].amount.currency).isEqualTo("USD")
         softly.assertAll()

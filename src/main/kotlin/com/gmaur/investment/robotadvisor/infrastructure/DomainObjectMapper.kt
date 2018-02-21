@@ -10,10 +10,22 @@ class DomainObjectMapper {
     fun toDTO(it: Operations): OperationsDTO {
         return OperationsDTO(
                 it.operations.map { operation ->
+                    val amount1 = AmountDTO.EUR(operation.amount().asString())
+                    val (asset, amount) = when (operation.assetDefinition) {
+                        is CashDefinition -> {
+                            Pair(XCash("none"), amount1)
+                        }
+                        is FundDefinition -> {
+                            Pair(XFund(operation.assetDefinition.id().value()), amount1)
+                        }
+                        else -> {
+                            throw IllegalArgumentException()
+                        }
+                    }
                     OperationDTO(
                             type = operation.javaClass.simpleName,
-                            asset = AssetDTO(isin = operation.asset.isin.value, transferrable = false),
-                            amount = AmountDTO.EUR(operation.asset.amount.asString())
+                            asset = asset,
+                            amount = amount
                     )
                 }
         )
@@ -29,10 +41,21 @@ class DomainObjectMapper {
                 })
     }
 
-    fun toDomain(dto: PortfolioDTO): Portfolio {
+    fun toDomain(dto: PortfolioDTO): Portfolio<Asset> {
         return Portfolio(
                 dto.assets.map { elementDTO ->
-                    Asset(isin = ISIN(elementDTO.asset.isin), amount = Amount(BigDecimal(elementDTO.amount.value)), transferrable = elementDTO.asset.transferrable)
+                    when (elementDTO) {
+                        is FundDTO -> {
+                            FundAsset(FundDefinition(isin = ISIN(elementDTO.isin)), amount = Amount(BigDecimal(elementDTO.amount.value)))
+                        }
+                        is CashDTO -> {
+                            Cash(amount = Amount(BigDecimal(elementDTO.amount.value)))
+                        }
+                        else -> {
+                            throw IllegalArgumentException()
+                        }
+                    }
+
                 }
         )
     }
