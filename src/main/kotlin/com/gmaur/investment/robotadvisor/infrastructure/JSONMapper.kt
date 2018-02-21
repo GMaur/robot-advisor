@@ -37,7 +37,7 @@ class XDeserializer @JvmOverloads constructor(vc: Class<*>? = null) : StdDeseria
                 XFund(isin = string(node, "isin"))
             }
             "cash" -> {
-                XCash("none")
+                XCash()
             }
             else -> {
                 throw IllegalArgumentException("type not recognized in: " + node.toString())

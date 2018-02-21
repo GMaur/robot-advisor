@@ -13,7 +13,7 @@ class DomainObjectMapper {
                     val amount1 = AmountDTO.EUR(operation.amount().asString())
                     val (asset, amount) = when (operation.assetDefinition) {
                         is CashDefinition -> {
-                            Pair(XCash("none"), amount1)
+                            Pair(XCash(), amount1)
                         }
                         is FundDefinition -> {
                             Pair(XFund(operation.assetDefinition.id().value()), amount1)

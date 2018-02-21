@@ -13,7 +13,7 @@ data class XFund(val isin: String) : X {
     public val type = "fund"
 }
 
-data class XCash(val none: String?) : X {
+class XCash : X {
     public val type = "cash"
 }
 
