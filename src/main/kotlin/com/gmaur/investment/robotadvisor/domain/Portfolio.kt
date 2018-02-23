@@ -65,7 +65,9 @@ data class Amount(val value: BigDecimal) {
     }
 
     private fun BigDecimal.withScale(): BigDecimal {
-        return this.setScale(2)
+        // TODO AGB need to find the correct case for this new functionality
+        return this.setScale(2, java.math.RoundingMode.HALF_EVEN)
+        // return this.setScale(2)
     }
 }
 
