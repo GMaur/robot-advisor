@@ -9,7 +9,7 @@ class RebalanceRequestObjectMother {
                     AssetAllocationDTO(listOf(
                             AssetAllocationElementDTO(isin = "LU1", percentage = "1%"))),
                     PortfolioDTO(listOf(
-                            XDTO(AssetDTO(isin = "LU1", transferrable = false), amount = AmountDTO.EUR("100"))))
+                            FundDTO(isin = "LU1", price = "100")))
             )
         }
     }

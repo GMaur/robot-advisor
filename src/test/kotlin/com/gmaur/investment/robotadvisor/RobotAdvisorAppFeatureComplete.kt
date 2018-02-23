@@ -2,7 +2,6 @@ package com.gmaur.investment.robotadvisor
 
 import arrow.core.Either
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Response
@@ -25,13 +24,13 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner::class)
-@ContextConfiguration(classes = [RobotAdvisorApp::class, RealPortfolioRebalancer::class])
+@ContextConfiguration(classes = [RobotAdvisorApp::class, RealPortfolioRebalancer::class, AppConfiguration::class])
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class RobotAdvisorAppFeatureComplete {
     @LocalServerPort
     var port: Int? = null
 
-    private val objectMapper: ObjectMapper = ObjectMapper().registerKotlinModule()
+    private val objectMapper: ObjectMapper = JSONMapper.aNew()
 
     @Before
     fun setUp() {
@@ -44,10 +43,12 @@ class RobotAdvisorAppFeatureComplete {
                 AssetAllocationElementDTO(isin = "LU1", percentage = "80%"),
                 AssetAllocationElementDTO(isin = "LU2", percentage = "20%")))
         val currentPortfolio = PortfolioDTO(listOf(
-                XDTO(AssetDTO(isin = "LU1", transferrable = false), amount = AmountDTO.EUR("8")),
-                XDTO(AssetDTO(isin = "LU2", transferrable = false), amount = AmountDTO.EUR("2")),
-                XDTO(AssetDTO(isin = "CASH", transferrable = true), amount = AmountDTO.EUR("90"))))
+                FundDTO(isin = "LU1", price = "8"),
+                FundDTO(isin = "LU2", price = "2"),
+                CashDTO(value = "90")))
+//        val jsonPayload = Files.readAllLines(Paths.get("/tmp", "rebalance_request.json")).joinToString("")
         val jsonPayload = serializeRequest(assetAllocation, currentPortfolio)
+
         println(jsonPayload)
 
         val response = balancePortfolio(jsonPayload)
@@ -58,15 +59,14 @@ class RobotAdvisorAppFeatureComplete {
                     fail("expected a right")
                 },
                 { (response, result) ->
-                    val get = result.get()
                     assertThat(response.statusCode).isEqualTo(200)
                     when (result) {
                         is Result.Success -> {
                             println(result.value)
                             assertThat(deserialize(result.value)).isEqualTo(
                                     OperationsDTO(listOf(
-                                            OperationDTO(type = "Purchase", asset = AssetDTO("LU1", false), amount = AmountDTO.EUR("72.00")),
-                                            OperationDTO(type = "Purchase", asset = AssetDTO("LU2", false), amount = AmountDTO.EUR("18.00"))
+                                            OperationDTO(type = "purchase", asset = XFund("LU1"), amount = AmountDTO.EUR("72.00")),
+                                            OperationDTO(type = "purchase", asset = XFund("LU2"), amount = AmountDTO.EUR("18.00"))
                                     )))
                         }
                         else -> {
@@ -83,7 +83,7 @@ class RobotAdvisorAppFeatureComplete {
     }
 
     private fun balancePortfolio(jsonPayload: String): Either<Exception, Pair<Response, Result<String, FuelError>>> {
-        val httpPost = "/rebalance/".httpPost().body(jsonPayload, Charsets.UTF_8).header("Content-Type" to "application/json")
+        val httpPost = "/rebalance".httpPost().body(jsonPayload, Charsets.UTF_8).header("Content-Type" to "application/json")
         try {
             val (_, response, result) = httpPost.responseString()
             return Either.right(Pair(response, result))
@@ -95,8 +95,7 @@ class RobotAdvisorAppFeatureComplete {
     }
 
     private fun serialize(request: RebalanceRequest): String {
-        val mapper: ObjectMapper = objectMapper
-        return mapper.writeValueAsString(request)
+        return objectMapper.writeValueAsString(request)
     }
 
 
