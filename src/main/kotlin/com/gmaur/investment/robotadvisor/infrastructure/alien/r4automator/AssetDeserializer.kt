@@ -6,7 +6,6 @@ import com.fasterxml.jackson.core.TreeNode
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.node.TextNode
-import com.gmaur.investment.robotadvisor.infrastructure.AmountDTO
 import com.gmaur.investment.robotadvisor.infrastructure.AssetDTO
 import com.gmaur.investment.robotadvisor.infrastructure.CashDTO
 import com.gmaur.investment.robotadvisor.infrastructure.FundDTO
@@ -19,10 +18,10 @@ class AssetDeserializer @JvmOverloads constructor(vc: Class<*>? = null) : StdDes
         val node = jp.codec.readTree<TreeNode>(jp)
         val result = when (string(node, "type")) {
             "fund" -> {
-                FundDTO(isin = string(node, "isin"), amount = AmountDTO.EUR(string(node, "price")))
+                FundDTO(isin = string(node, "isin"), price = string(node, "price"))
             }
             "cash" -> {
-                CashDTO(amount = AmountDTO.EUR(string(node, "value")))
+                CashDTO(value = string(node, "value"))
             }
             else -> {
                 throw IllegalArgumentException("type not recognized in: " + node.toString())

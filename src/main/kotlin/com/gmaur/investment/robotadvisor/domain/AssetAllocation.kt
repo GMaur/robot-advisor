@@ -25,7 +25,7 @@ data class AssetAllocation private constructor(val values: List<AssetAllocationS
         val total = portfolio.total()
         val groupedAmounts = portfolio.groupBy()
         val groupedPercentages = this.groupBy()
-        //TODO AGB need to assert on teh amount of groupedAmounts = grouped assets
+        //TODO AGB need to assert on tehamount of groupedAmounts = grouped assets
         for (asset in portfolio.funds().assets) {
             val assetExists = groupedAmounts.get(asset.isin()) != null
             if (!assetExists) {

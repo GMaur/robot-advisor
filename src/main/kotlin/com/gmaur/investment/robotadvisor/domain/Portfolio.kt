@@ -46,16 +46,18 @@ data class Portfolio<out T : Asset>(val assets: List<T>) {
 }
 
 data class Amount(val value: BigDecimal) {
+    private val mathContext = MathContext(2, RoundingMode.HALF_EVEN)
+
     fun add(amount: Amount): Amount {
         return Amount(value.add(amount.value).withScale())
     }
 
     fun percentageOf(total: Amount): Percentage {
-        return Percentage(this.value.divide(total.value, MathContext(2, RoundingMode.HALF_EVEN)).withScale().toString())
+        return Percentage(this.value.divide(total.value, mathContext).withScale().toString())
     }
 
     fun multiply(percentage: Percentage): Amount {
-        return Amount(this.value.multiply(BigDecimal(percentage.value)).withScale())
+        return Amount(this.value.multiply(BigDecimal(percentage.value), mathContext).withScale())
     }
 
     fun asString(): String {

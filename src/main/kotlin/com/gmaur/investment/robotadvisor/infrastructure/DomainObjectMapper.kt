@@ -33,7 +33,7 @@ class DomainObjectMapper {
 
     fun toDomain(dto: AssetAllocationDTO): Either<Exception, AssetAllocation> {
         return AssetAllocation.aNew(
-                dto.listOf.map { elementDTO ->
+                dto.assetAllocation.map { elementDTO ->
                     val percentage = elementDTO.percentage
                     val value = percentage.substring(0, percentage.length - 1)
                     val textOverOne = BigDecimal(value).divide(BigDecimal.valueOf(100L), MathContext(2, RoundingMode.HALF_EVEN)).toString()
@@ -46,10 +46,10 @@ class DomainObjectMapper {
                 dto.assets.map { elementDTO ->
                     when (elementDTO) {
                         is FundDTO -> {
-                            FundAsset(FundDefinition(isin = ISIN(elementDTO.isin)), amount = Amount(BigDecimal(elementDTO.amount.value)))
+                            FundAsset(FundDefinition(isin = ISIN(elementDTO.isin)), amount = Amount(BigDecimal(elementDTO.price)))
                         }
                         is CashDTO -> {
-                            Cash(amount = Amount(BigDecimal(elementDTO.amount.value)))
+                            Cash(amount = Amount(BigDecimal(elementDTO.value)))
                         }
                         else -> {
                             throw IllegalArgumentException()

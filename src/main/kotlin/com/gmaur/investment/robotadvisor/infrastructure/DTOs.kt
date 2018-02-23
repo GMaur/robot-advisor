@@ -1,6 +1,6 @@
 package com.gmaur.investment.robotadvisor.infrastructure
 
-data class AssetAllocationDTO(val listOf: List<AssetAllocationElementDTO>)
+data class AssetAllocationDTO(val assetAllocation: List<AssetAllocationElementDTO>)
 data class PortfolioDTO(val assets: List<AssetDTO>)
 
 //This is output from our robot-advisor
@@ -17,36 +17,13 @@ class XCash : X {
     public val type = "cash"
 }
 
-interface AssetIdDTO {
-    fun value(): String?
+interface AssetDTO
+data class FundDTO(val isin: String, val price: String) : AssetDTO {
+    public val type = "fund"
 }
 
-data class FundIdDTO(val isin: String) : AssetIdDTO {
-    override fun value(): String? {
-        return isin
-    }
-}
-
-data class NullAssetIdDTO(val id: String? = null) : AssetIdDTO {
-    override fun value(): String? {
-        return id
-    }
-}
-
-interface AssetDTO {
-    fun id(): AssetIdDTO
-}
-
-data class FundDTO(val isin: String, val amount: AmountDTO) : AssetDTO {
-    override fun id(): AssetIdDTO {
-        return FundIdDTO(isin)
-    }
-}
-
-data class CashDTO(val amount: AmountDTO) : AssetDTO {
-    override fun id(): AssetIdDTO {
-        return NullAssetIdDTO()
-    }
+data class CashDTO(val value: String) : AssetDTO {
+    public val type = "cash"
 }
 
 data class AmountDTO private constructor(val value: String, val currency: String) {

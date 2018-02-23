@@ -19,7 +19,7 @@ class DomainObjectMapperShould {
 
         val dtos = DomainObjectMapper().toDTO(ops)
 
-        var softly = SoftAssertions()
+        val softly = SoftAssertions()
 
         softly.assertThat(dtos.operations).hasSize(2)
         softly.assertThat((dtos.operations[0].asset as XFund).isin).isEqualTo("LU0")
@@ -33,6 +33,17 @@ class DomainObjectMapperShould {
         softly.assertThat(dtos.operations[1].type).isEqualTo("purchase")
 
         softly.assertAll()
+
+        println(mapper.writeValueAsString(dtos))
+    }
+
+    @Test
+    fun `generate sample assetallocation`() {
+        val assetAllocation = AssetAllocationDTO(listOf(
+                AssetAllocationElementDTO("LU21", "51%"),
+                AssetAllocationElementDTO("LU22", "49%")))
+
+        println(mapper.writeValueAsString(assetAllocation))
     }
 
     @Test
@@ -40,9 +51,9 @@ class DomainObjectMapperShould {
         val assetAllocationElementDTO =
                 AssetAllocationDTO(listOf(AssetAllocationElementDTO(isin = "LU1", percentage = "21%")))
 
-        var eitherDomain = DomainObjectMapper().toDomain(assetAllocationElementDTO)
+        val eitherDomain = DomainObjectMapper().toDomain(assetAllocationElementDTO)
 
-        var softly = SoftAssertions()
+        val softly = SoftAssertions()
         softly.assertThat(eitherDomain.isRight())
         val domain = eitherDomain.get()
         softly.assertThat(domain.values).hasSize(1)
@@ -55,11 +66,11 @@ class DomainObjectMapperShould {
     @Test
     fun `portfolioDTO - convert to domain`() {
         val portfolioDTO = PortfolioDTO(listOf(
-                FundDTO(isin = "LU1", amount = AmountDTO.EUR("100"))))
+                FundDTO(isin = "LU1", price = "100")))
 
         val domain = DomainObjectMapper().toDomain(portfolioDTO)
 
-        var softly = SoftAssertions()
+        val softly = SoftAssertions()
 
         softly.assertThat(domain.assets).hasSize(1)
         val firstAsset = domain.assets[0] as FundAsset
