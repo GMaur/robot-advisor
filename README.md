@@ -1,6 +1,6 @@
 # Robot advisor
 
-A project to advise you with your [personal] finances. A part of GMaur Investments' Ideas
+A project to advise you with your [personal] finances. A part of [Robot Advisor](https://github.com/RobotAdvisor) (GMaur's Investment Ideas)
 
 ## Scope
 
