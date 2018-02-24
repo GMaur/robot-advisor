@@ -19,6 +19,10 @@ This aims to be a stateless service that performs the business logic with regard
   - any broker-specific condition (e.g., commissions)
   - anything else not mention in scope 
   
+## Running it
+
+see RUNNING.md
+  
   
 ## Notes
 
