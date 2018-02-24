@@ -1,7 +1,6 @@
 package com.gmaur.investment.robotadvisor.domain
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Ignore
 import org.junit.Test
 import java.math.BigDecimal
 
@@ -28,14 +27,11 @@ class AmountShould {
     }
 
     @Test
-    @Ignore("does not catch the rounding error")
     fun `calculate percentage of with decimals (rounding errors)`() {
         assertPercentageOf("21.00", "100.54", "0.21")
         assertPercentageOf("50.00", "100.54", "0.50")
         assertPercentageOf("21.00", "99.99", "0.21")
-
-
-//        assertMultiply("21.00", "100.54", "2111.34")
+        assertPercentageOf("15.13", "218.93", "0.07")
     }
 
     private fun assertPercentageOf(numerator: String, denominator: String, expected: String) {
