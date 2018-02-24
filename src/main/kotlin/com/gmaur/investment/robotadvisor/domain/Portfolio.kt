@@ -46,7 +46,7 @@ data class Portfolio<out T : Asset>(val assets: List<T>) {
 }
 
 data class Amount(val value: BigDecimal) {
-    private val mathContext = MathContext(2, RoundingMode.HALF_EVEN)
+    private val mathContext = MathContext(32, RoundingMode.HALF_EVEN)
 
     fun add(amount: Amount): Amount {
         return Amount(value.add(amount.value).withScale())
@@ -65,7 +65,7 @@ data class Amount(val value: BigDecimal) {
     }
 
     private fun BigDecimal.withScale(): BigDecimal {
-        return this.setScale(2)
+        return this.setScale(2, java.math.RoundingMode.HALF_EVEN)
     }
 }
 
