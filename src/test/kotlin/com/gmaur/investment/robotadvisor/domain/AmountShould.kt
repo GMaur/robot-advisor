@@ -32,11 +32,18 @@ class AmountShould {
         assertPercentageOf("15.13", "218.93", "0.07")
     }
 
+    @Test
+    fun `calculate the multiplication`() {
+        assertMultiply("10", ".20", "2.00")
+        assertMultiply("10.000001", ".20001", "2.00")
+        assertMultiply("218.93", "0.07", "15.33")
+    }
+
     private fun assertPercentageOf(numerator: String, denominator: String, expected: String) {
         assertThat(Amount((BigDecimal(numerator))).percentageOf(Amount(BigDecimal(denominator)))).isEqualTo(Percentage(expected))
     }
 
     private fun assertMultiply(a: String, b: String, expected: String) {
-        assertThat(Amount((BigDecimal(a))).multiply(Percentage(b))).isEqualTo(Percentage(expected))
+        assertThat(Amount((BigDecimal(a))).multiply(Percentage(b))).isEqualTo(Amount(BigDecimal(expected)))
     }
 }
