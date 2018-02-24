@@ -7,9 +7,7 @@ import java.math.BigDecimal
 class AmountShould {
     @Test
     fun `calculate percentage`() {
-        val result = Amount(BigDecimal.valueOf(10L)).percentageOf(Amount(BigDecimal.valueOf(100L)))
-
-        assertThat(result).isEqualTo(Percentage("0.10"))
+        assertPercentageOf("10", "100", "0.10")
     }
 
     @Test
