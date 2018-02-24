@@ -16,6 +16,9 @@ This aims to be a stateless service that performs the business logic with regard
   
 ### Out of scope
 
+Note: This project is open to contributions. If you want to contribute with ideas or pull requests (PRs),
+feel free to go ahead.
+
   - any broker-specific condition (e.g., commissions)
   - anything else not mention in scope 
   
@@ -27,6 +30,19 @@ see RUNNING.md
 ## Notes
 
   - We prefer usability and communication over ReST compliance.
+  
+## Contributing
+
+This project is open to contributions.
+
+We're mainly interested in solving our own problems, not adding features for the sake of completion.
+On the other hand, if you need to solve a problem of yours that is not currently solved by this
+project, please contact us (message / issue).
+
+### Reaching us
+
+Please send a message (e.g., [twitter](https://twitter.com/alvarobiz)) or an [issue](https://github.com/gmaur/robot-advisor/issues)
+
 
 
 ## Related projects
