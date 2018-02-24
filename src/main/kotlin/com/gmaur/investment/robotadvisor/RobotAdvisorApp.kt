@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import kotlin.system.exitProcess
 
 @Configuration
 @SpringBootApplication
@@ -51,5 +52,13 @@ class RobotAdvisorApp(private val portfolioRebalancer: PortfolioRebalancer) : Ap
 }
 
 fun main(args: Array<String>) {
+    if (!inDebugMode()) {
+        println("This application is in alpha mode - please execute it in debug mode only")
+        exitProcess(1)
+    }
     runApplication<RobotAdvisorApp>(*args)
+}
+
+fun inDebugMode(): Boolean {
+    return java.lang.management.ManagementFactory.getRuntimeMXBean().inputArguments.toString().contains("-agentlib:jdwp")
 }
