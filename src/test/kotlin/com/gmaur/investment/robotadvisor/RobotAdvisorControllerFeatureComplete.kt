@@ -7,7 +7,7 @@ import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
-import com.gmaur.investment.robotadvisor.RobotAdvisorAppFeatureComplete.RealPortfolioRebalancer
+import com.gmaur.investment.robotadvisor.RobotAdvisorControllerFeatureComplete.RealPortfolioRebalancer
 import com.gmaur.investment.robotadvisor.domain.FixedStrategy
 import com.gmaur.investment.robotadvisor.domain.PortfolioRebalancer
 import com.gmaur.investment.robotadvisor.infrastructure.*
@@ -24,9 +24,9 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner::class)
-@ContextConfiguration(classes = [RobotAdvisorApp::class, RealPortfolioRebalancer::class, AppConfiguration::class])
+@ContextConfiguration(classes = [RobotAdvisorController::class, RealPortfolioRebalancer::class, AppConfiguration::class])
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class RobotAdvisorAppFeatureComplete {
+class RobotAdvisorControllerFeatureComplete {
     @LocalServerPort
     var port: Int? = null
 

@@ -1,18 +1,16 @@
 package com.gmaur.investment.robotadvisor
 
 import arrow.core.Either
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
+import com.gmaur.investment.robotadvisor.RobotAdvisorControllerFeatureMocked.FakeConfiguration
 import com.gmaur.investment.robotadvisor.domain.PortfolioRebalancer
-import com.gmaur.investment.robotadvisor.infrastructure.JSONMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
@@ -25,21 +23,11 @@ import org.springframework.context.annotation.Import
 import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner::class)
-@Import(value = [RobotAdvisorAppFeatureMocked.FakeConfiguration::class, RobotAdvisorApp::class])
+@Import(value = [RobotAdvisorController::class, FakeConfiguration::class])
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Ignore("The portfolioRebalancer is not a mock, therefore cannot verify on top of it - see issue #3")
-class RobotAdvisorAppFeatureMocked {
+class RobotAdvisorControllerFeatureMocked {
     @LocalServerPort
     var port: Int? = null
-
-    private val objectMapper: ObjectMapper = JSONMapper.aNew()
-
-    private fun <T> any(): T {
-        Mockito.any<T>()
-        return uninitialized()
-    }
-
-    private fun <T> uninitialized(): T = null as T
 
     @Autowired
     private lateinit var portfolioRebalancer: PortfolioRebalancer
@@ -51,12 +39,13 @@ class RobotAdvisorAppFeatureMocked {
 
     @Test
     fun `incomplete request`() {
-        val jsonPayload = """
+        var jsonPayload = """
             {"ideal":{"values":[{"isin":{"value":"LU1"},"percentage":{"value":"80"}},{"isin":{"value":"LU2"},"percentage":{"value":"20"}}]},
             "current":null}
             """ // missing the current portfolio
 
         val result = balancePortfolio(jsonPayload)
+
 
         assertThat(result.isRight()).isTrue()
         result.bimap(
@@ -84,13 +73,13 @@ class RobotAdvisorAppFeatureMocked {
 
     }
 
-@Configuration
-class FakeConfiguration {
-    private val portfolioRebalancer = Mockito.mock(PortfolioRebalancer::class.java)
+    @Configuration
+    class FakeConfiguration {
+        private val portfolioRebalancer = Mockito.mock(PortfolioRebalancer::class.java)
 
-    @Bean
-    fun rebalancer(): PortfolioRebalancer {
-        return portfolioRebalancer
+        @Bean
+        fun rebalancer(): PortfolioRebalancer {
+            return portfolioRebalancer
+        }
     }
-}
 }

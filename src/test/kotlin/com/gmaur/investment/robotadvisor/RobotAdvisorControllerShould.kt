@@ -10,27 +10,27 @@ import org.junit.Test
 import org.junit.rules.ExpectedException
 import org.mockito.Mockito
 
-class RobotAdvisorAppShould {
+class RobotAdvisorControllerShould {
     private val portfolioRebalancer: PortfolioRebalancer = Mockito.mock(PortfolioRebalancer::class.java)
 
     @Rule
     @JvmField
     val expectedException: ExpectedException = ExpectedException.none()
 
-    private var robotAdvisorApp: RobotAdvisorApp? = null
+    private var robotAdvisorController: RobotAdvisorController? = null
 
     private val domainMapper: DomainObjectMapper = DomainObjectMapper()
 
     @Before
     fun setUp() {
-        robotAdvisorApp = RobotAdvisorApp(portfolioRebalancer)
+        robotAdvisorController = RobotAdvisorController(portfolioRebalancer)
     }
 
     @Test
     fun `validate the rebalance request - no portfolio`() {
         expectedException.expect(IllegalArgumentException::class.java)
 
-        robotAdvisorApp?.rebalance(correctRebalanceRequest.copy(current = null))
+        robotAdvisorController?.rebalance(correctRebalanceRequest.copy(current = null))
 
         Mockito.verifyZeroInteractions(portfolioRebalancer)
     }
@@ -39,7 +39,7 @@ class RobotAdvisorAppShould {
     fun `validate the rebalance request - no assetallocation`() {
         expectedException.expect(IllegalArgumentException::class.java)
 
-        robotAdvisorApp?.rebalance(correctRebalanceRequest.copy(ideal = null))
+        robotAdvisorController?.rebalance(correctRebalanceRequest.copy(ideal = null))
 
         Mockito.verifyZeroInteractions(portfolioRebalancer)
     }
@@ -48,7 +48,7 @@ class RobotAdvisorAppShould {
     fun `forward the message to the portfolio rebalancer`() {
         expectedException.expect(IllegalArgumentException::class.java)
 
-        robotAdvisorApp?.rebalance(correctRebalanceRequest.copy(ideal = null))
+        robotAdvisorController?.rebalance(correctRebalanceRequest.copy(ideal = null))
 
         Mockito.verify(portfolioRebalancer).rebalance(domainMapper.toDomain(correctRebalanceRequest.ideal!!).get(), domainMapper.toDomain(correctRebalanceRequest.current!!))
     }
