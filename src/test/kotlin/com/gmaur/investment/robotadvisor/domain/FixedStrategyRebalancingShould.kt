@@ -10,8 +10,7 @@ class FixedStrategyRebalancingShould {
     fun `not rebalance a portfolio that is correct already`() {
         val ideal = AssetAllocation.aNew(listOf(AssetAllocationSingle(ISIN("LU1"), Percentage("1")))).get()
         val current = Portfolio(listOf(fund("LU1", "100")))
-
-
+        
         val rebalance = strategy.rebalance(ideal, current)
 
         assertThat(rebalance).isEqualTo(operations())
