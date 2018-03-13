@@ -1,9 +1,7 @@
 package com.gmaur.investment.robotadvisor
 
 import com.gmaur.investment.robotadvisor.domain.PortfolioRebalancer
-import com.gmaur.investment.robotadvisor.infrastructure.DomainObjectMapper
-import com.gmaur.investment.robotadvisor.infrastructure.Rebalance
-import com.gmaur.investment.robotadvisor.infrastructure.RebalanceRequest
+import com.gmaur.investment.robotadvisor.infrastructure.*
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpStatus
@@ -25,6 +23,20 @@ class RobotAdvisorController(private val portfolioRebalancer: PortfolioRebalance
                 .toOption()
         val result = rebalance
                 .map { portfolioRebalancer.rebalance(it.ideal, it.current) }
+                .map { domainObjectMapper.toDTO(it) }
+        return result.get()
+    }
+
+
+    @PostMapping("/contribute")
+    fun rebalance(@RequestBody requestDTO: ContributeRequest): Any {
+        val requestOrFailure = Contribute.parse(requestDTO)
+        val request = requestOrFailure.bimap(
+                { it -> throw IllegalArgumentException(it[0].message) },
+                { it -> it })
+                .toOption()
+        val result = request
+                .map { portfolioRebalancer.contribute(it.cash, it.ideal) }
                 .map { domainObjectMapper.toDTO(it) }
         return result.get()
     }

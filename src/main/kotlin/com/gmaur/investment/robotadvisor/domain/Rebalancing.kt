@@ -41,11 +41,24 @@ interface RebalancingStrategy {
     fun rebalance(assetAllocation: AssetAllocation, portfolio: Portfolio<Asset>): Operations
 }
 
+interface ContributeStrategy {
+    fun contribute(amount: Cash, assetAllocation: AssetAllocation): Operations
+}
+
 /**
  * Fixed mode: all transferable assets are transformed into purchases following the asset allocation.
  * It does not matter in which state (e.g., percentage) the portfolio is
  */
-object FixedStrategy : RebalancingStrategy {
+object FixedStrategy : RebalancingStrategy, ContributeStrategy {
+    override fun contribute(amount: Cash, assetAllocation: AssetAllocation): Operations {
+        val totalAmount = amount.amount
+        if (totalAmount == Amount.EUR("0")) {
+            return Operations(listOf())
+        }
+
+        return Operations(assetAllocation.values.map(toPurchase(totalAmount)))
+    }
+
     override fun rebalance(assetAllocation: AssetAllocation, portfolio: Portfolio<Asset>): Operations {
         if (assetAllocation.matches(portfolio)) {
             return Operations(listOf())
@@ -56,7 +69,7 @@ object FixedStrategy : RebalancingStrategy {
         return Operations(assetAllocation.values.map(toPurchase(totalAmount)))
     }
 
-    private fun toPurchase(totalAmount: Amount) =
+    private fun toPurchase(totalAmount: Amount): (AssetAllocationSingle) -> Purchase =
             { element: AssetAllocationSingle ->
                 Purchase(FundDefinition(element.isin), totalAmount.multiply(element.percentage))
             }

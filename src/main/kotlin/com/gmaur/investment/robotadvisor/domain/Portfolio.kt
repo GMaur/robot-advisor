@@ -48,6 +48,12 @@ data class Portfolio<out T : Asset>(val assets: List<T>) {
 data class Amount(val value: BigDecimal) {
     private val mathContext = MathContext(32, RoundingMode.HALF_EVEN)
 
+    companion object {
+        fun EUR(representation: String): Amount {
+            return Amount(BigDecimal(representation))
+        }
+    }
+
     fun add(amount: Amount): Amount {
         return Amount(value.add(amount.value).withScale())
     }

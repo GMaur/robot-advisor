@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration
 class AppConfiguration {
     @Bean
     fun portfolioRebalancer(): PortfolioRebalancer {
-        return PortfolioRebalancer(FixedStrategy)
+        return PortfolioRebalancer(FixedStrategy, FixedStrategy)
     }
 
     @Bean

@@ -107,7 +107,7 @@ class RobotAdvisorControllerFeatureComplete {
     class RealPortfolioRebalancer {
         @Bean
         fun portfolioRebalancer(): PortfolioRebalancer {
-            return PortfolioRebalancer(FixedStrategy)
+            return PortfolioRebalancer(FixedStrategy, FixedStrategy)
         }
     }
 
