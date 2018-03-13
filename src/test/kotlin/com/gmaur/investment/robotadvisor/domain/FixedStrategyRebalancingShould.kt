@@ -102,10 +102,6 @@ class FixedStrategyRebalancingShould {
         assertThat(rebalance).isEqualTo(operations(fundPurchase("LU1", "80")))
     }
 
-    private fun operations(vararg purchases: Operation): Operations {
-        return Operations(purchases.toList())
-    }
-
     @Test
     fun `rebalance a portfolio with multiple elements in the asset allocation`() {
         val ideal = AssetAllocation.aNew(listOf(
@@ -120,10 +116,10 @@ class FixedStrategyRebalancingShould {
 
         val rebalance = strategy.rebalance(ideal, current)
 
-        assertThat(rebalance).isEqualTo(Operations(listOf(
+        assertThat(rebalance).isEqualTo(operations(
                 fundPurchase("LU1", "40.00"),
                 fundPurchase("LU2", "40.00")
-        )))
+        ))
     }
 
     @Test
@@ -146,6 +142,10 @@ class FixedStrategyRebalancingShould {
                 fundPurchase("LU2", "32.00"),
                 fundPurchase("LU3", "16.00")
         )))
+    }
+
+    private fun operations(vararg purchases: Operation): Operations {
+        return Operations(purchases.toList())
     }
 
     private fun fundPurchase(isin: String, value: String): Operation {
