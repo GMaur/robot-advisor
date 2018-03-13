@@ -137,11 +137,11 @@ class FixedStrategyRebalancingShould {
 
         val rebalance = strategy.rebalance(ideal, current)
 
-        assertThat(rebalance).isEqualTo(Operations(listOf(
+        assertThat(rebalance).isEqualTo(operations(
                 fundPurchase("LU1", "32.00"),
                 fundPurchase("LU2", "32.00"),
                 fundPurchase("LU3", "16.00")
-        )))
+        ))
     }
 
     private fun operations(vararg purchases: Operation): Operations {
