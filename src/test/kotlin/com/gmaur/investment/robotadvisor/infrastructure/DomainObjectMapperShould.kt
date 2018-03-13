@@ -3,7 +3,6 @@ package com.gmaur.investment.robotadvisor.infrastructure
 import com.gmaur.investment.robotadvisor.domain.*
 import org.assertj.core.api.SoftAssertions
 import org.junit.Test
-import java.math.BigDecimal
 
 
 class DomainObjectMapperShould {
@@ -75,7 +74,7 @@ class DomainObjectMapperShould {
         softly.assertThat(domain.assets).hasSize(1)
         val firstAsset = domain.assets[0] as FundAsset
         softly.assertThat(firstAsset.fund.id()).isEqualTo(ISIN("LU1"))
-        softly.assertThat(firstAsset.amount()).isEqualTo(Amount(BigDecimal.valueOf(100L)))
+        softly.assertThat(firstAsset.amount()).isEqualTo(Amount.EUR("100"))
 
         softly.assertAll()
     }

@@ -2,20 +2,18 @@ package com.gmaur.investment.robotadvisor.domain
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import java.math.BigDecimal
 
-class FixedStrategyShould {
-    private val strategy = FixedStrategy
+class FixedStrategyRebalancingShould {
+    private val strategy = FixedRebalanceStrategy()
 
     @Test
     fun `not rebalance a portfolio that is correct already`() {
         val ideal = AssetAllocation.aNew(listOf(AssetAllocationSingle(ISIN("LU1"), Percentage("1")))).get()
-        val current = Portfolio(listOf(fund("LU1", 100L)))
-
-
+        val current = Portfolio(listOf(fund("LU1", "100")))
+        
         val rebalance = strategy.rebalance(ideal, current)
 
-        assertThat(rebalance).isEqualTo(Operations(listOf()))
+        assertThat(rebalance).isEqualTo(operations())
     }
 
     @Test
@@ -25,14 +23,14 @@ class FixedStrategyShould {
                 AssetAllocationSingle(ISIN("LU1"), Percentage("0.5"))
         )).get()
         val current = Portfolio(listOf(
-                fund("LU1", 50),
-                fund("LU1", 50L),
-                fund("LU1", 50)
+                fund("LU1", "50"),
+                fund("LU1", "50"),
+                fund("LU1", "50")
         ))
 
         val rebalance = strategy.rebalance(ideal, current)
 
-        assertThat(rebalance).isEqualTo(Operations(listOf()))
+        assertThat(rebalance).isEqualTo(operations())
     }
 
     @Test
@@ -41,7 +39,7 @@ class FixedStrategyShould {
         val ideal = AssetAllocation.aNew(listOf(
                 AssetAllocationSingle(ISIN(isinValue), Percentage("1"))
         )).get()
-        val amountValue = 50L
+        val amountValue = "50"
         val current = Portfolio(listOf(
                 fund(isinValue, amountValue),
                 fund(isinValue, amountValue),
@@ -50,7 +48,7 @@ class FixedStrategyShould {
 
         val rebalance = strategy.rebalance(ideal, current)
 
-        assertThat(rebalance).isEqualTo(Operations(listOf()))
+        assertThat(rebalance).isEqualTo(operations())
     }
 
 
@@ -61,13 +59,13 @@ class FixedStrategyShould {
                 AssetAllocationSingle(ISIN("LU1"), Percentage("0.6"))
         )).get()
         val current = Portfolio(listOf(
-                fund("LU1", 60L),
-                fund("LU2", 40L)
+                fund("LU1", "60"),
+                fund("LU2", "40")
         ))
 
         val rebalance = strategy.rebalance(ideal, current)
 
-        assertThat(rebalance).isEqualTo(Operations(listOf()))
+        assertThat(rebalance).isEqualTo(operations())
     }
 
     @Test
@@ -77,13 +75,13 @@ class FixedStrategyShould {
                 AssetAllocationSingle(ISIN("LU2"), Percentage("0.4"))
         )).get()
         val current = Portfolio(listOf(
-                fund("LU1", 60L),
-                fund("LU2", 40L)
+                fund("LU1", "60"),
+                fund("LU2", "40")
         ))
 
         val rebalance = strategy.rebalance(ideal, current)
 
-        assertThat(rebalance).isEqualTo(Operations(listOf()))
+        assertThat(rebalance).isEqualTo(operations())
     }
 
 
@@ -93,15 +91,15 @@ class FixedStrategyShould {
                 AssetAllocationSingle(ISIN("LU1"), Percentage("1"))
         )).get()
         val current = Portfolio(listOf(
-                fund("LU1", 60L),
-                cash(40),
-                cash(40)
+                fund("LU1", "60"),
+                cash("40"),
+                cash("40")
         ))
 
         val rebalance = strategy.rebalance(ideal, current)
 
-        assertThat(rebalance).isEqualTo(Operations(listOf(Purchase(
-                FundDefinition(ISIN("LU1")), Amount(BigDecimal("80.00"))))))
+        assertThat(rebalance).isEqualTo(operations(
+                fundPurchase("LU1", "80")))
     }
 
     @Test
@@ -111,17 +109,17 @@ class FixedStrategyShould {
                 AssetAllocationSingle(ISIN("LU2"), Percentage("0.5"))
         )).get()
         val current = Portfolio(listOf(
-                fund("LU1", 60L),
-                cash(40),
-                cash(40)
+                fund("LU1", "60"),
+                cash("40"),
+                cash("40")
         ))
 
         val rebalance = strategy.rebalance(ideal, current)
 
-        assertThat(rebalance).isEqualTo(Operations(listOf(
-                fundPurchase("LU1", "40.00"),
-                fundPurchase("LU2", "40.00")
-        )))
+        assertThat(rebalance).isEqualTo(operations(
+                fundPurchase("LU1", "40"),
+                fundPurchase("LU2", "40")
+        ))
     }
 
     @Test
@@ -132,29 +130,33 @@ class FixedStrategyShould {
                 AssetAllocationSingle(ISIN("LU3"), Percentage("0.2"))
         )).get()
         val current = Portfolio(listOf(
-                fund("LU1", 60L),
-                cash(40),
-                cash(40)
+                fund("LU1", "60"),
+                cash("40"),
+                cash("40")
         ))
 
         val rebalance = strategy.rebalance(ideal, current)
 
-        assertThat(rebalance).isEqualTo(Operations(listOf(
-                fundPurchase("LU1", "32.00"),
-                fundPurchase("LU2", "32.00"),
-                fundPurchase("LU3", "16.00")
-        )))
+        assertThat(rebalance).isEqualTo(operations(
+                fundPurchase("LU1", "32"),
+                fundPurchase("LU2", "32"),
+                fundPurchase("LU3", "16")
+        ))
+    }
+
+    private fun operations(vararg purchases: Operation): Operations {
+        return Operations(purchases.toList())
     }
 
     private fun fundPurchase(isin: String, value: String): Operation {
         return PurchaseObjectMother.fund(isin, value)
     }
 
-    private fun fund(isinValue: String, amountValue: Long): Asset {
+    private fun fund(isinValue: String, amountValue: String): Asset {
         return AssetObjectMother.fund(isinValue, amountValue)
     }
 
-    private fun cash(amountValue: Long): Asset {
+    private fun cash(amountValue: String): Asset {
         return AssetObjectMother.cash(amountValue)
     }
 }

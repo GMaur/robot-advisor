@@ -9,12 +9,12 @@ class PortfolioShould {
     @Test
     fun `add all amounts`() {
         var total = Portfolio(listOf(
-                AssetObjectMother.cash(1),
-                AssetObjectMother.cash(1)
+                AssetObjectMother.cash("1"),
+                AssetObjectMother.cash("1")
 
         )).total()
 
-        assertThat(total).isEqualTo(Amount(BigDecimal("2.00")))
+        assertThat(total).isEqualTo(Amount.EUR("2.00"))
     }
 
     @Test

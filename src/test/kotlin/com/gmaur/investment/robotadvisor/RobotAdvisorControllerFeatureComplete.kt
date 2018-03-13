@@ -4,12 +4,11 @@ import arrow.core.Either
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.FuelManager
+import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
 import com.gmaur.investment.robotadvisor.RobotAdvisorControllerFeatureComplete.RealPortfolioRebalancer
-import com.gmaur.investment.robotadvisor.domain.FixedStrategy
-import com.gmaur.investment.robotadvisor.domain.PortfolioRebalancer
 import com.gmaur.investment.robotadvisor.infrastructure.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
@@ -18,7 +17,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
-import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringRunner
@@ -47,7 +45,7 @@ class RobotAdvisorControllerFeatureComplete {
                 FundDTO(isin = "LU2", price = "2"),
                 CashDTO(value = "90")))
 //        val jsonPayload = Files.readAllLines(Paths.get("/tmp", "rebalance_request.json")).joinToString("")
-        val jsonPayload = serializeRequest(assetAllocation, currentPortfolio)
+        val jsonPayload = serialize(RebalanceRequest(ideal = assetAllocation, current = currentPortfolio))
 
         println(jsonPayload)
 
@@ -76,14 +74,58 @@ class RobotAdvisorControllerFeatureComplete {
                 })
     }
 
-    private fun serializeRequest(assetAllocation: AssetAllocationDTO, currentPortfolio: PortfolioDTO): String {
-        val request = RebalanceRequest(ideal = assetAllocation, current = currentPortfolio)
-        val jsonPayload = serialize(request)
-        return jsonPayload
+    @Test
+    fun `contributes to a portfolio comparing to the ideal distribution`() {
+        val assetAllocation = AssetAllocationDTO(listOf(
+                fundDTO("LU1", "80%"),
+                fundDTO("LU2", "20%")))
+        val cash = CashDTO(value = "100")
+        val jsonPayload = serialize(ContributeRequest(ideal = assetAllocation, cash = cash))
+
+        println(jsonPayload)
+
+        val response = contributeToPortfolio(jsonPayload)
+
+        assertThat(response.isRight())
+        response.bimap(
+                {
+                    fail("expected a right")
+                },
+                { (response, result) ->
+                    assertThat(response.statusCode).isEqualTo(200)
+                    when (result) {
+                        is Result.Success -> {
+                            println(result.value)
+                            assertThat(deserialize(result.value)).isEqualTo(
+                                    OperationsDTO(listOf(
+                                            OperationDTO(type = "purchase", asset = XFund("LU1"), amount = AmountDTO.EUR("80.00")),
+                                            OperationDTO(type = "purchase", asset = XFund("LU2"), amount = AmountDTO.EUR("20.00"))
+                                    )))
+                        }
+                        else -> {
+                            fail("expected a Result.success")
+                        }
+                    }
+                })
+    }
+
+    private fun fundDTO(isin: String, percentage: String): AssetAllocationElementDTO {
+        return AssetAllocationElementDTO(isin = isin, percentage = percentage)
     }
 
     private fun balancePortfolio(jsonPayload: String): Either<Exception, Pair<Response, Result<String, FuelError>>> {
-        val httpPost = "/rebalance".httpPost().body(jsonPayload, Charsets.UTF_8).header("Content-Type" to "application/json")
+        val request = post("/rebalance", jsonPayload)
+        return processRequest(request)
+    }
+
+    private fun contributeToPortfolio(jsonPayload: String): Either<Exception, Pair<Response, Result<String, FuelError>>> {
+        val request = post("/contribute", jsonPayload)
+        return processRequest(request)
+    }
+
+    private fun post(url: String, jsonPayload: String) = url.httpPost().body(jsonPayload, Charsets.UTF_8).header("Content-Type" to "application/json")
+
+    private fun processRequest(httpPost: Request): Either<Exception, Pair<Response, Result<String, FuelError>>> {
         try {
             val (_, response, result) = httpPost.responseString()
             return Either.right(Pair(response, result))
@@ -91,10 +133,9 @@ class RobotAdvisorControllerFeatureComplete {
             e.printStackTrace()
             return Either.left(e)
         }
-
     }
 
-    private fun serialize(request: RebalanceRequest): String {
+    private fun serialize(request: Any): String {
         return objectMapper.writeValueAsString(request)
     }
 
@@ -105,10 +146,6 @@ class RobotAdvisorControllerFeatureComplete {
 
     @Configuration
     class RealPortfolioRebalancer {
-        @Bean
-        fun portfolioRebalancer(): PortfolioRebalancer {
-            return PortfolioRebalancer(FixedStrategy)
-        }
     }
 
 }

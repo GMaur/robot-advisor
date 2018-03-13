@@ -11,7 +11,7 @@ data class Portfolio<out T : Asset>(val assets: List<T>) {
         return assets
                 .map(Asset::amount)
                 .fold(
-                        Amount(BigDecimal.valueOf(0)),
+                        Amount.EUR("0"),
                         { amount, other -> amount.add(other) }
                 )
     }
@@ -19,7 +19,7 @@ data class Portfolio<out T : Asset>(val assets: List<T>) {
     fun groupBy(): GroupedAmounts {
         val temp: HashMap<AssetId, Amount> = HashMap()
         for (asset in this.funds().assets) {
-            temp[asset.isin()] = temp.getOrDefault(asset.isin(), Amount(BigDecimal.valueOf(0))).add(asset.amount)
+            temp[asset.isin()] = temp.getOrDefault(asset.isin(), Amount.EUR("0")).add(asset.amount)
         }
         return GroupedAmounts(temp)
     }
@@ -43,10 +43,29 @@ data class Portfolio<out T : Asset>(val assets: List<T>) {
                 .map { it as FundAsset })
     }
 
+
+    open fun rebalance(rebalancingStrategy: RebalancingStrategy, ideal: AssetAllocation): Operations {
+        return rebalancingStrategy.rebalance(ideal, this)
+    }
+
+    open fun contribute(contributeStrategy: ContributeStrategy, ideal: AssetAllocation): Operations {
+        return contributeStrategy.contribute(cash().assets.first(), ideal)
+    }
+
 }
 
-data class Amount(val value: BigDecimal) {
-    private val mathContext = MathContext(32, RoundingMode.HALF_EVEN)
+data class Amount private constructor(val value: BigDecimal) {
+    companion object {
+        private val mathContext = MathContext(32, RoundingMode.HALF_EVEN)
+        fun EUR(representation: String): Amount {
+            return Amount(BigDecimal(representation).withScale())
+        }
+
+        private fun BigDecimal.withScale(): BigDecimal {
+            return this.setScale(2, java.math.RoundingMode.HALF_EVEN)
+        }
+
+    }
 
     fun add(amount: Amount): Amount {
         return Amount(value.add(amount.value).withScale())
@@ -62,10 +81,6 @@ data class Amount(val value: BigDecimal) {
 
     fun asString(): String {
         return this.value.withScale().toString()
-    }
-
-    private fun BigDecimal.withScale(): BigDecimal {
-        return this.setScale(2, java.math.RoundingMode.HALF_EVEN)
     }
 }
 
