@@ -118,8 +118,8 @@ class FixedStrategyRebalancingShould {
         val rebalance = strategy.rebalance(ideal, current)
 
         assertThat(rebalance).isEqualTo(operations(
-                fundPurchase("LU1", "40.00"),
-                fundPurchase("LU2", "40.00")
+                fundPurchase("LU1", "40"),
+                fundPurchase("LU2", "40")
         ))
     }
 
@@ -139,9 +139,9 @@ class FixedStrategyRebalancingShould {
         val rebalance = strategy.rebalance(ideal, current)
 
         assertThat(rebalance).isEqualTo(operations(
-                fundPurchase("LU1", "32.00"),
-                fundPurchase("LU2", "32.00"),
-                fundPurchase("LU3", "16.00")
+                fundPurchase("LU1", "32"),
+                fundPurchase("LU2", "32"),
+                fundPurchase("LU3", "16")
         ))
     }
 
