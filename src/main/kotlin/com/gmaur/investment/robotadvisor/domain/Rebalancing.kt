@@ -32,6 +32,28 @@ class Purchase(override val assetDefinition: AssetDefinition, private val amount
     override fun toString(): String {
         return "Purchase(assetDefinition=$assetDefinition, amount=$amount)"
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        if (!super.equals(other)) return false
+
+        other as Purchase
+
+        if (assetDefinition != other.assetDefinition) return false
+        if (amount != other.amount) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + assetDefinition.hashCode()
+        result = 31 * result + amount.hashCode()
+        return result
+    }
+
+
 }
 
 data class InvalidInvariant(val value: String) : Exception()
