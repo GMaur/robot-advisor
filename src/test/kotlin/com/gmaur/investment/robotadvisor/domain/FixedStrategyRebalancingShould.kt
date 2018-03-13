@@ -2,7 +2,6 @@ package com.gmaur.investment.robotadvisor.domain
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import java.math.BigDecimal
 
 class FixedStrategyRebalancingShould {
     private val strategy = FixedStrategy
@@ -100,8 +99,11 @@ class FixedStrategyRebalancingShould {
 
         val rebalance = strategy.rebalance(ideal, current)
 
-        assertThat(rebalance).isEqualTo(Operations(listOf(Purchase(
-                FundDefinition(ISIN("LU1")), Amount(BigDecimal("80.00"))))))
+        assertThat(rebalance).isEqualTo(operations(fundPurchase("LU1", "80")))
+    }
+
+    private fun operations(vararg purchases: Operation): Operations {
+        return Operations(purchases.toList())
     }
 
     @Test
