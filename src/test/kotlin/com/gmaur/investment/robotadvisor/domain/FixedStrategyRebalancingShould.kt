@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.math.BigDecimal
 
-class FixedStrategyShould {
+class FixedStrategyRebalancingShould {
     private val strategy = FixedStrategy
 
     @Test
