@@ -8,7 +8,7 @@ class FixedStrategyContributeShould {
 
     @Test
     fun `not contribute to a portfolio that has no cash available`() {
-        val ideal = AssetAllocation.aNew(listOf(AssetAllocationSingle(ISIN("LU1"), Percentage("1")))).get()
+        val ideal = AssetAllocation.aNew(listOf(fundAsset("LU1", "1"))).get()
 
         val contributions = strategy.contribute(cash(0), ideal)
 
@@ -18,8 +18,8 @@ class FixedStrategyContributeShould {
     @Test
     fun `not contribute to a portfolio that has no cash available - repeated allocation cases)`() {
         val ideal = AssetAllocation.aNew(listOf(
-                AssetAllocationSingle(ISIN("LU1"), Percentage("0.5")),
-                AssetAllocationSingle(ISIN("LU1"), Percentage("0.5"))
+                fundAsset("LU1", "0.5"),
+                fundAsset("LU1", "0.5")
         )).get()
 
         val contributions = strategy.contribute(cash(0), ideal)
@@ -30,8 +30,8 @@ class FixedStrategyContributeShould {
     @Test
     fun `contribute to a portfolio with several assets -- order does matter (the order of the results is the order of the input)`() {
         val ideal = AssetAllocation.aNew(listOf(
-                AssetAllocationSingle(ISIN("LU1"), Percentage("0.6")),
-                AssetAllocationSingle(ISIN("LU2"), Percentage("0.4"))
+                fundAsset("LU1", "0.6"),
+                fundAsset("LU2", "0.4")
         )).get()
 
         val contributions = strategy.contribute(cash(100), ideal)
@@ -45,8 +45,8 @@ class FixedStrategyContributeShould {
     @Test
     fun `contribute to a portfolio with several assets -- order does matter (the order of the results is the order of the input) 2`() {
         val ideal = AssetAllocation.aNew(listOf(
-                AssetAllocationSingle(ISIN("LU2"), Percentage("0.6")),
-                AssetAllocationSingle(ISIN("LU1"), Percentage("0.4"))
+                fundAsset("LU2", "0.6"),
+                fundAsset("LU1", "0.4")
         )).get()
 
         val contributions = strategy.contribute(cash(100), ideal)
@@ -61,7 +61,7 @@ class FixedStrategyContributeShould {
     @Test
     fun `contribute to a portfolio with a single element in the asset allocation`() {
         val ideal = AssetAllocation.aNew(listOf(
-                AssetAllocationSingle(ISIN("LU1"), Percentage("1"))
+                fundAsset("LU1", "1")
         )).get()
 
         val contributions = strategy.contribute(cash(80), ideal)
@@ -69,6 +69,8 @@ class FixedStrategyContributeShould {
         assertThat(contributions).isEqualTo(Operations(listOf(Purchase(
                 FundDefinition(ISIN("LU1")), Amount.EUR("80.00")))))
     }
+
+    private fun fundAsset(isin: String, percentage: String) = AssetAllocationObjectMother.fund(isin, percentage)
 
     private fun fundPurchase(isin: String, value: String): Operation {
         return PurchaseObjectMother.fund(isin, value)
