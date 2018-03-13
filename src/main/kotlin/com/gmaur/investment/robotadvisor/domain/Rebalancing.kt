@@ -67,10 +67,9 @@ interface ContributeStrategy {
 }
 
 /**
- * Fixed mode: all transferable assets are transformed into purchases following the asset allocation.
- * It does not matter in which state (e.g., percentage) the portfolio is
+ * Fixed mode: cash is transformed into purchases following the asset allocation.
  */
-object FixedStrategy : RebalancingStrategy, ContributeStrategy {
+open class FixedContributeStrategy : ContributeStrategy {
     override fun contribute(amount: Cash, assetAllocation: AssetAllocation): Operations {
         val totalAmount = amount.amount
         if (totalAmount == Amount.EUR("0")) {
@@ -79,6 +78,12 @@ object FixedStrategy : RebalancingStrategy, ContributeStrategy {
 
         return Operations(assetAllocation.values.map(toPurchase(totalAmount)))
     }
+}
+
+/**
+ * Fixed mode: TODO
+ */
+open class FixedRebalanceStrategy : RebalancingStrategy {
 
     override fun rebalance(assetAllocation: AssetAllocation, portfolio: Portfolio<Asset>): Operations {
         if (assetAllocation.matches(portfolio)) {
@@ -89,10 +94,9 @@ object FixedStrategy : RebalancingStrategy, ContributeStrategy {
 
         return Operations(assetAllocation.values.map(toPurchase(totalAmount)))
     }
-
-    private fun toPurchase(totalAmount: Amount): (AssetAllocationSingle) -> Purchase =
-            { element: AssetAllocationSingle ->
-                Purchase(FundDefinition(element.isin), totalAmount.multiply(element.percentage))
-            }
-
 }
+
+private fun toPurchase(totalAmount: Amount): (AssetAllocationSingle) -> Purchase =
+        { element: AssetAllocationSingle ->
+            Purchase(FundDefinition(element.isin), totalAmount.multiply(element.percentage))
+        }

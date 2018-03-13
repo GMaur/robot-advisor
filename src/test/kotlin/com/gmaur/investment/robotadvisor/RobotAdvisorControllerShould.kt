@@ -1,6 +1,7 @@
 package com.gmaur.investment.robotadvisor
 
-import com.gmaur.investment.robotadvisor.domain.PortfolioRebalancer
+import com.gmaur.investment.robotadvisor.domain.FixedContributeStrategy
+import com.gmaur.investment.robotadvisor.domain.FixedRebalanceStrategy
 import com.gmaur.investment.robotadvisor.infrastructure.DomainObjectMapper
 import com.gmaur.investment.robotadvisor.infrastructure.RebalanceRequest
 import com.gmaur.investment.robotadvisor.objectmother.RebalanceRequestObjectMother
@@ -11,7 +12,8 @@ import org.junit.rules.ExpectedException
 import org.mockito.Mockito
 
 class RobotAdvisorControllerShould {
-    private val portfolioRebalancer: PortfolioRebalancer = Mockito.mock(PortfolioRebalancer::class.java)
+    private val rebalanceStrategy = Mockito.mock(FixedRebalanceStrategy::class.java)
+    private val contributeStrategy = Mockito.mock(FixedContributeStrategy::class.java)
 
     @Rule
     @JvmField
@@ -23,7 +25,7 @@ class RobotAdvisorControllerShould {
 
     @Before
     fun setUp() {
-        robotAdvisorController = RobotAdvisorController(portfolioRebalancer)
+        robotAdvisorController = RobotAdvisorController(rebalanceStrategy, contributeStrategy)
     }
 
     @Test
@@ -32,7 +34,7 @@ class RobotAdvisorControllerShould {
 
         robotAdvisorController?.rebalance(correctRebalanceRequest.copy(current = null))
 
-        Mockito.verifyZeroInteractions(portfolioRebalancer)
+        Mockito.verifyZeroInteractions(rebalanceStrategy)
     }
 
     @Test
@@ -41,7 +43,7 @@ class RobotAdvisorControllerShould {
 
         robotAdvisorController?.rebalance(correctRebalanceRequest.copy(ideal = null))
 
-        Mockito.verifyZeroInteractions(portfolioRebalancer)
+        Mockito.verifyZeroInteractions(rebalanceStrategy)
     }
 
     @Test
@@ -50,7 +52,7 @@ class RobotAdvisorControllerShould {
 
         robotAdvisorController?.rebalance(correctRebalanceRequest.copy(ideal = null))
 
-        Mockito.verify(portfolioRebalancer).rebalance(domainMapper.toDomain(correctRebalanceRequest.ideal!!).get(), domainMapper.toDomain(correctRebalanceRequest.current!!))
+        Mockito.verify(rebalanceStrategy).rebalance(domainMapper.toDomain(correctRebalanceRequest.ideal!!).get(), domainMapper.toDomain(correctRebalanceRequest.current!!))
     }
 
     private val correctRebalanceRequest: RebalanceRequest = RebalanceRequestObjectMother.aNew()

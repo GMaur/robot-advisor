@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class FixedStrategyContributeShould {
-    private val strategy = FixedStrategy
+    private val strategy = FixedContributeStrategy()
 
     @Test
     fun `not rebalance a portfolio that is correct already`() {

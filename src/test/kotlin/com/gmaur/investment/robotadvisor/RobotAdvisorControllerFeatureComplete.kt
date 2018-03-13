@@ -9,8 +9,6 @@ import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
 import com.gmaur.investment.robotadvisor.RobotAdvisorControllerFeatureComplete.RealPortfolioRebalancer
-import com.gmaur.investment.robotadvisor.domain.FixedStrategy
-import com.gmaur.investment.robotadvisor.domain.PortfolioRebalancer
 import com.gmaur.investment.robotadvisor.infrastructure.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
@@ -19,7 +17,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
-import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringRunner
@@ -145,10 +142,6 @@ class RobotAdvisorControllerFeatureComplete {
 
     @Configuration
     class RealPortfolioRebalancer {
-        @Bean
-        fun portfolioRebalancer(): PortfolioRebalancer {
-            return PortfolioRebalancer(FixedStrategy, FixedStrategy)
-        }
     }
 
 }

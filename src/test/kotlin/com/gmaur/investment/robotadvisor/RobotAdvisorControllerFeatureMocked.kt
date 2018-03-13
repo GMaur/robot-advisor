@@ -7,7 +7,10 @@ import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
 import com.gmaur.investment.robotadvisor.RobotAdvisorControllerFeatureMocked.FakeConfiguration
-import com.gmaur.investment.robotadvisor.domain.PortfolioRebalancer
+import com.gmaur.investment.robotadvisor.domain.ContributeStrategy
+import com.gmaur.investment.robotadvisor.domain.FixedContributeStrategy
+import com.gmaur.investment.robotadvisor.domain.FixedRebalanceStrategy
+import com.gmaur.investment.robotadvisor.domain.RebalancingStrategy
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.Before
@@ -30,7 +33,7 @@ class RobotAdvisorControllerFeatureMocked {
     var port: Int? = null
 
     @Autowired
-    private lateinit var portfolioRebalancer: PortfolioRebalancer
+    private lateinit var contributeStrategy: ContributeStrategy
 
     @Before
     fun setUp() {
@@ -58,7 +61,7 @@ class RobotAdvisorControllerFeatureMocked {
                         }
                     }
                 })
-        Mockito.verifyZeroInteractions(portfolioRebalancer)
+        Mockito.verifyZeroInteractions(contributeStrategy)
     }
 
     private fun balancePortfolio(jsonPayload: String): Either<Exception, Pair<Response, Result<String, FuelError>>> {
@@ -75,11 +78,17 @@ class RobotAdvisorControllerFeatureMocked {
 
     @Configuration
     class FakeConfiguration {
-        private val portfolioRebalancer = Mockito.mock(PortfolioRebalancer::class.java)
+        val contributeStrategy = Mockito.mock(FixedContributeStrategy::class.java)
+        val rebalanceStrategy = Mockito.mock(FixedRebalanceStrategy::class.java)
 
         @Bean
-        fun rebalancer(): PortfolioRebalancer {
-            return portfolioRebalancer
+        fun ContributeStrategy(): ContributeStrategy {
+            return contributeStrategy
+        }
+
+        @Bean
+        fun RebalancingStrategy(): RebalancingStrategy {
+            return rebalanceStrategy
         }
     }
 }

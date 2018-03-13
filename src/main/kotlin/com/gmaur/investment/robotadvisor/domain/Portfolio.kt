@@ -43,15 +43,28 @@ data class Portfolio<out T : Asset>(val assets: List<T>) {
                 .map { it as FundAsset })
     }
 
+
+    open fun rebalance(rebalancingStrategy: RebalancingStrategy, ideal: AssetAllocation): Operations {
+        return rebalancingStrategy.rebalance(ideal, this)
+    }
+
+    open fun contribute(contributeStrategy: ContributeStrategy, ideal: AssetAllocation): Operations {
+        return contributeStrategy.contribute(cash().assets.first(), ideal)
+    }
+
 }
 
 data class Amount private constructor(val value: BigDecimal) {
-    private val mathContext = MathContext(32, RoundingMode.HALF_EVEN)
-
     companion object {
+        private val mathContext = MathContext(32, RoundingMode.HALF_EVEN)
         fun EUR(representation: String): Amount {
-            return Amount(BigDecimal(representation))
+            return Amount(BigDecimal(representation).withScale())
         }
+
+        private fun BigDecimal.withScale(): BigDecimal {
+            return this.setScale(2, java.math.RoundingMode.HALF_EVEN)
+        }
+
     }
 
     fun add(amount: Amount): Amount {
@@ -68,10 +81,6 @@ data class Amount private constructor(val value: BigDecimal) {
 
     fun asString(): String {
         return this.value.withScale().toString()
-    }
-
-    private fun BigDecimal.withScale(): BigDecimal {
-        return this.setScale(2, java.math.RoundingMode.HALF_EVEN)
     }
 }
 
