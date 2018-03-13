@@ -2,10 +2,6 @@ package com.gmaur.investment.robotadvisor.domain
 
 class AssetObjectMother {
     companion object {
-        fun cash(amountValue: Long): Asset {
-            return cash(amountValue.toString())
-        }
-
         fun cash(amountValue: String): Asset {
             return Cash(Amount.EUR(amountValue))
         }

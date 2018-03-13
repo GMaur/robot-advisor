@@ -9,8 +9,8 @@ class PortfolioShould {
     @Test
     fun `add all amounts`() {
         var total = Portfolio(listOf(
-                AssetObjectMother.cash(1),
-                AssetObjectMother.cash(1)
+                AssetObjectMother.cash("1"),
+                AssetObjectMother.cash("1")
 
         )).total()
 
