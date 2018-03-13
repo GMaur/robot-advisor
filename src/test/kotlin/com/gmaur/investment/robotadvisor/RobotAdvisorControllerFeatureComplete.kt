@@ -77,8 +77,8 @@ class RobotAdvisorControllerFeatureComplete {
     @Test
     fun `contributes to a portfolio comparing to the ideal distribution`() {
         val assetAllocation = AssetAllocationDTO(listOf(
-                AssetAllocationElementDTO(isin = "LU1", percentage = "80%"),
-                AssetAllocationElementDTO(isin = "LU2", percentage = "20%")))
+                fundDTO("LU1", "80%"),
+                fundDTO("LU2", "20%")))
         val cash = CashDTO(value = "100")
         val jsonPayload = serialize(ContributeRequest(ideal = assetAllocation, cash = cash))
 
@@ -107,6 +107,10 @@ class RobotAdvisorControllerFeatureComplete {
                         }
                     }
                 })
+    }
+
+    private fun fundDTO(isin: String, percentage: String): AssetAllocationElementDTO {
+        return AssetAllocationElementDTO(isin = isin, percentage = percentage)
     }
 
     private fun balancePortfolio(jsonPayload: String): Either<Exception, Pair<Response, Result<String, FuelError>>> {
