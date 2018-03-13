@@ -37,11 +37,9 @@ class FixedStrategyContributeShould {
         val contributions = strategy.contribute(cash(100), ideal)
 
         assertThat(contributions).isEqualTo(Operations(listOf(
-                Purchase(
-                        FundDefinition(ISIN("LU1")), Amount.EUR("60")),
-                Purchase(
-                        FundDefinition(ISIN("LU2")), Amount.EUR("40"))
-        )))
+                fundPurchase("LU1", "60"),
+                fundPurchase("LU2", "40"))
+        ))
     }
 
     @Test
@@ -54,11 +52,9 @@ class FixedStrategyContributeShould {
         val contributions = strategy.contribute(cash(100), ideal)
 
         assertThat(contributions).isEqualTo(Operations(listOf(
-                Purchase(
-                        FundDefinition(ISIN("LU2")), Amount.EUR("60")),
-                Purchase(
-                        FundDefinition(ISIN("LU1")), Amount.EUR("40"))
-        )))
+                fundPurchase("LU2", "60"),
+                fundPurchase("LU1", "40"))
+        ))
     }
 
 
