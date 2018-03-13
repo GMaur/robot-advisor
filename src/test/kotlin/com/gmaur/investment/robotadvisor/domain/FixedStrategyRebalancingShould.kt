@@ -9,7 +9,7 @@ class FixedStrategyRebalancingShould {
     @Test
     fun `not rebalance a portfolio that is correct already`() {
         val ideal = AssetAllocation.aNew(listOf(AssetAllocationSingle(ISIN("LU1"), Percentage("1")))).get()
-        val current = Portfolio(listOf(fund("LU1", 100L)))
+        val current = Portfolio(listOf(fund("LU1", "100")))
 
 
         val rebalance = strategy.rebalance(ideal, current)
@@ -24,9 +24,9 @@ class FixedStrategyRebalancingShould {
                 AssetAllocationSingle(ISIN("LU1"), Percentage("0.5"))
         )).get()
         val current = Portfolio(listOf(
-                fund("LU1", 50),
-                fund("LU1", 50L),
-                fund("LU1", 50)
+                fund("LU1", "50"),
+                fund("LU1", "50"),
+                fund("LU1", "50")
         ))
 
         val rebalance = strategy.rebalance(ideal, current)
@@ -40,7 +40,7 @@ class FixedStrategyRebalancingShould {
         val ideal = AssetAllocation.aNew(listOf(
                 AssetAllocationSingle(ISIN(isinValue), Percentage("1"))
         )).get()
-        val amountValue = 50L
+        val amountValue = "50"
         val current = Portfolio(listOf(
                 fund(isinValue, amountValue),
                 fund(isinValue, amountValue),
@@ -76,8 +76,8 @@ class FixedStrategyRebalancingShould {
                 AssetAllocationSingle(ISIN("LU2"), Percentage("0.4"))
         )).get()
         val current = Portfolio(listOf(
-                fund("LU1", 60L),
-                fund("LU2", 40L)
+                fund("LU1", "60"),
+                fund("LU2", "40")
         ))
 
         val rebalance = strategy.rebalance(ideal, current)
@@ -92,9 +92,9 @@ class FixedStrategyRebalancingShould {
                 AssetAllocationSingle(ISIN("LU1"), Percentage("1"))
         )).get()
         val current = Portfolio(listOf(
-                fund("LU1", 60L),
-                cash(40),
-                cash(40)
+                fund("LU1", "60"),
+                cash("40"),
+                cash("40")
         ))
 
         val rebalance = strategy.rebalance(ideal, current)
@@ -110,9 +110,9 @@ class FixedStrategyRebalancingShould {
                 AssetAllocationSingle(ISIN("LU2"), Percentage("0.5"))
         )).get()
         val current = Portfolio(listOf(
-                fund("LU1", 60L),
-                cash(40),
-                cash(40)
+                fund("LU1", "60"),
+                cash("40"),
+                cash("40")
         ))
 
         val rebalance = strategy.rebalance(ideal, current)
@@ -131,9 +131,9 @@ class FixedStrategyRebalancingShould {
                 AssetAllocationSingle(ISIN("LU3"), Percentage("0.2"))
         )).get()
         val current = Portfolio(listOf(
-                fund("LU1", 60L),
-                cash(40),
-                cash(40)
+                fund("LU1", "60"),
+                cash("40"),
+                cash("40")
         ))
 
         val rebalance = strategy.rebalance(ideal, current)
@@ -153,15 +153,11 @@ class FixedStrategyRebalancingShould {
         return PurchaseObjectMother.fund(isin, value)
     }
 
-    private fun fund(isinValue: String, amountValue: Long): Asset {
-        return AssetObjectMother.fund(isinValue, amountValue)
-    }
-
     private fun fund(isinValue: String, amountValue: String): Asset {
         return AssetObjectMother.fund(isinValue, amountValue)
     }
 
-    private fun cash(amountValue: Long): Asset {
+    private fun cash(amountValue: String): Asset {
         return AssetObjectMother.cash(amountValue)
     }
 }
