@@ -14,7 +14,7 @@ class FixedStrategyRebalancingShould {
 
         val rebalance = strategy.rebalance(ideal, current)
 
-        assertThat(rebalance).isEqualTo(Operations(listOf()))
+        assertThat(rebalance).isEqualTo(operations())
     }
 
     @Test
@@ -31,7 +31,7 @@ class FixedStrategyRebalancingShould {
 
         val rebalance = strategy.rebalance(ideal, current)
 
-        assertThat(rebalance).isEqualTo(Operations(listOf()))
+        assertThat(rebalance).isEqualTo(operations())
     }
 
     @Test
@@ -49,7 +49,7 @@ class FixedStrategyRebalancingShould {
 
         val rebalance = strategy.rebalance(ideal, current)
 
-        assertThat(rebalance).isEqualTo(Operations(listOf()))
+        assertThat(rebalance).isEqualTo(operations())
     }
 
 
@@ -66,7 +66,7 @@ class FixedStrategyRebalancingShould {
 
         val rebalance = strategy.rebalance(ideal, current)
 
-        assertThat(rebalance).isEqualTo(Operations(listOf()))
+        assertThat(rebalance).isEqualTo(operations())
     }
 
     @Test
@@ -82,7 +82,7 @@ class FixedStrategyRebalancingShould {
 
         val rebalance = strategy.rebalance(ideal, current)
 
-        assertThat(rebalance).isEqualTo(Operations(listOf()))
+        assertThat(rebalance).isEqualTo(operations())
     }
 
 
@@ -99,7 +99,8 @@ class FixedStrategyRebalancingShould {
 
         val rebalance = strategy.rebalance(ideal, current)
 
-        assertThat(rebalance).isEqualTo(operations(fundPurchase("LU1", "80")))
+        assertThat(rebalance).isEqualTo(operations(
+                fundPurchase("LU1", "80")))
     }
 
     @Test
