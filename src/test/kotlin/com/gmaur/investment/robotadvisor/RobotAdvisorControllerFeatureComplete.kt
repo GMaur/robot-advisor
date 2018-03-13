@@ -47,7 +47,7 @@ class RobotAdvisorControllerFeatureComplete {
                 FundDTO(isin = "LU2", price = "2"),
                 CashDTO(value = "90")))
 //        val jsonPayload = Files.readAllLines(Paths.get("/tmp", "rebalance_request.json")).joinToString("")
-        val jsonPayload = serializeRequest(assetAllocation, currentPortfolio)
+        val jsonPayload = serialize(RebalanceRequest(ideal = assetAllocation, current = currentPortfolio))
 
         println(jsonPayload)
 
@@ -82,7 +82,7 @@ class RobotAdvisorControllerFeatureComplete {
                 AssetAllocationElementDTO(isin = "LU1", percentage = "80%"),
                 AssetAllocationElementDTO(isin = "LU2", percentage = "20%")))
         val cash = CashDTO(value = "100")
-        val jsonPayload = serializeRequest(assetAllocation, cash)
+        val jsonPayload = serialize(ContributeRequest(ideal = assetAllocation, cash = cash))
 
         println(jsonPayload)
 
@@ -109,18 +109,6 @@ class RobotAdvisorControllerFeatureComplete {
                         }
                     }
                 })
-    }
-
-    private fun serializeRequest(assetAllocation: AssetAllocationDTO, currentPortfolio: PortfolioDTO): String {
-        val request = RebalanceRequest(ideal = assetAllocation, current = currentPortfolio)
-        val jsonPayload = serialize(request)
-        return jsonPayload
-    }
-
-    private fun serializeRequest(assetAllocation: AssetAllocationDTO, cash: CashDTO): String {
-        val request = ContributeRequest(ideal = assetAllocation, cash = cash)
-        val jsonPayload = serialize(request)
-        return jsonPayload
     }
 
     private fun balancePortfolio(jsonPayload: String): Either<Exception, Pair<Response, Result<String, FuelError>>> {
