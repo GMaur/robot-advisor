@@ -8,8 +8,8 @@ This aims to be a stateless service that performs the business logic with regard
 
 ### In scope
 
-  - distribute the contributions to a portfolio
-  - rebalance the portfolio according to some rules
+  - distribute the contributions to a portfolio. Operation = contribute
+  - rebalance the portfolio according to some rules. Operation = rebalance
   - to solve our problems
   - known limitations:
     - only works with funds (not ETFs, stocks, pension plans)
