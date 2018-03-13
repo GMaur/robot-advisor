@@ -1,7 +1,5 @@
 package com.gmaur.investment.robotadvisor.domain
 
-import java.math.BigDecimal
-
 class AssetObjectMother {
     companion object {
         fun cash(amountValue: Long): Asset {
@@ -9,7 +7,7 @@ class AssetObjectMother {
         }
 
         fun cash(amountValue: String): Asset {
-            return Cash(Amount(BigDecimal(amountValue)))
+            return Cash(Amount.EUR(amountValue))
         }
 
         fun fund(isinValue: String, amountValue: Long): Asset {
@@ -17,7 +15,7 @@ class AssetObjectMother {
         }
 
         fun fund(isinValue: String, amountValue: String): Asset {
-            return FundAsset(FundDefinition(ISIN(isinValue)), Amount(BigDecimal(amountValue)))
+            return FundAsset(FundDefinition(ISIN(isinValue)), Amount.EUR(amountValue))
         }
     }
 

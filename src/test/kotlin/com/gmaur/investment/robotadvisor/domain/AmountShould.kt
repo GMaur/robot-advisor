@@ -2,7 +2,6 @@ package com.gmaur.investment.robotadvisor.domain
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import java.math.BigDecimal
 
 class AmountShould {
     @Test
@@ -12,16 +11,16 @@ class AmountShould {
 
     @Test
     fun `add with decimals`() {
-        val result = Amount(BigDecimal("10.0")).add(Amount(BigDecimal("11")))
+        val result = Amount.EUR("10.0").add(Amount.EUR("11"))
 
-        assertThat(result).isEqualTo(Amount(BigDecimal("21.00")))
+        assertThat(result).isEqualTo(Amount.EUR("21.00"))
     }
 
     @Test
     fun `add without decimals`() {
-        val result = Amount(BigDecimal("10")).add(Amount(BigDecimal("11")))
+        val result = Amount.EUR("10").add(Amount.EUR("11"))
 
-        assertThat(result).isEqualTo(Amount(BigDecimal("21.00")))
+        assertThat(result).isEqualTo(Amount.EUR("21.00"))
     }
 
     @Test
@@ -40,10 +39,10 @@ class AmountShould {
     }
 
     private fun assertPercentageOf(numerator: String, denominator: String, expected: String) {
-        assertThat(Amount((BigDecimal(numerator))).percentageOf(Amount(BigDecimal(denominator)))).isEqualTo(Percentage(expected))
+        assertThat(Amount.EUR(numerator).percentageOf(Amount.EUR(denominator))).isEqualTo(Percentage(expected))
     }
 
     private fun assertMultiply(a: String, b: String, expected: String) {
-        assertThat(Amount((BigDecimal(a))).multiply(Percentage(b))).isEqualTo(Amount(BigDecimal(expected)))
+        assertThat(Amount.EUR(a).multiply(Percentage(b))).isEqualTo(Amount.EUR(expected))
     }
 }

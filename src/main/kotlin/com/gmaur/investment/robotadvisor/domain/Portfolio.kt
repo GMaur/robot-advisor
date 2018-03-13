@@ -11,7 +11,7 @@ data class Portfolio<out T : Asset>(val assets: List<T>) {
         return assets
                 .map(Asset::amount)
                 .fold(
-                        Amount(BigDecimal.valueOf(0)),
+                        Amount.EUR("0"),
                         { amount, other -> amount.add(other) }
                 )
     }
@@ -19,7 +19,7 @@ data class Portfolio<out T : Asset>(val assets: List<T>) {
     fun groupBy(): GroupedAmounts {
         val temp: HashMap<AssetId, Amount> = HashMap()
         for (asset in this.funds().assets) {
-            temp[asset.isin()] = temp.getOrDefault(asset.isin(), Amount(BigDecimal.valueOf(0))).add(asset.amount)
+            temp[asset.isin()] = temp.getOrDefault(asset.isin(), Amount.EUR("0")).add(asset.amount)
         }
         return GroupedAmounts(temp)
     }
@@ -45,7 +45,7 @@ data class Portfolio<out T : Asset>(val assets: List<T>) {
 
 }
 
-data class Amount(val value: BigDecimal) {
+data class Amount private constructor(val value: BigDecimal) {
     private val mathContext = MathContext(32, RoundingMode.HALF_EVEN)
 
     companion object {

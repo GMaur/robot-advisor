@@ -31,7 +31,7 @@ class Purchase(override val assetDefinition: AssetDefinition, private val amount
     }
 
     override fun toString(): String {
-        return "Purchase(asset=$assetDefinition)"
+        return "Purchase(assetDefinition=$assetDefinition, amount=$amount)"
     }
 }
 

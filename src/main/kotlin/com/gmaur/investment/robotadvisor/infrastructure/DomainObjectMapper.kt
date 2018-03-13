@@ -46,7 +46,7 @@ class DomainObjectMapper {
                 dto.assets.map { elementDTO ->
                     when (elementDTO) {
                         is FundDTO -> {
-                            FundAsset(FundDefinition(isin = ISIN(elementDTO.isin)), amount = Amount(BigDecimal(elementDTO.price)))
+                            FundAsset(FundDefinition(isin = ISIN(elementDTO.isin)), amount = Amount.EUR(elementDTO.price))
                         }
                         is CashDTO -> {
                             toDomain(elementDTO)
@@ -61,6 +61,6 @@ class DomainObjectMapper {
     }
 
     fun toDomain(cash: CashDTO): Cash {
-        return Cash(amount = Amount(BigDecimal(cash.value)))
+        return Cash(amount = Amount.EUR(cash.value))
     }
 }

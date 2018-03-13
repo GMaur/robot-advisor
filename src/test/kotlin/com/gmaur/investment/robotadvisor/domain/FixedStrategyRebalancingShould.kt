@@ -60,8 +60,8 @@ class FixedStrategyRebalancingShould {
                 AssetAllocationSingle(ISIN("LU1"), Percentage("0.6"))
         )).get()
         val current = Portfolio(listOf(
-                fund("LU1", 60L),
-                fund("LU2", 40L)
+                fund("LU1", "60"),
+                fund("LU2", "40")
         ))
 
         val rebalance = strategy.rebalance(ideal, current)
@@ -154,6 +154,10 @@ class FixedStrategyRebalancingShould {
     }
 
     private fun fund(isinValue: String, amountValue: Long): Asset {
+        return AssetObjectMother.fund(isinValue, amountValue)
+    }
+
+    private fun fund(isinValue: String, amountValue: String): Asset {
         return AssetObjectMother.fund(isinValue, amountValue)
     }
 

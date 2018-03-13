@@ -14,7 +14,7 @@ class PortfolioShould {
 
         )).total()
 
-        assertThat(total).isEqualTo(Amount(BigDecimal("2.00")))
+        assertThat(total).isEqualTo(Amount.EUR("2.00"))
     }
 
     @Test
