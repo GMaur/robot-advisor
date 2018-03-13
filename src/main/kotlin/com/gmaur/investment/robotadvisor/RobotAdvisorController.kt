@@ -29,7 +29,7 @@ class RobotAdvisorController(private val portfolioRebalancer: PortfolioRebalance
 
 
     @PostMapping("/contribute")
-    fun rebalance(@RequestBody requestDTO: ContributeRequest): Any {
+    fun contribute(@RequestBody requestDTO: ContributeRequest): Any {
         val requestOrFailure = Contribute.parse(requestDTO)
         val request = requestOrFailure.bimap(
                 { it -> throw IllegalArgumentException(it[0].message) },
