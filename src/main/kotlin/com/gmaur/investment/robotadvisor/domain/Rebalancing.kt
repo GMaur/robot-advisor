@@ -24,7 +24,6 @@ abstract class Operation(open val assetDefinition: AssetDefinition) {
 
 }
 
-// TODO AGB not correct that a purchase does not have an Amount?
 class Purchase(override val assetDefinition: AssetDefinition, private val amount: Amount) : Operation(assetDefinition) {
     override fun amount(): Amount {
         return amount
