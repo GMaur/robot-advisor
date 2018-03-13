@@ -4,6 +4,7 @@ import arrow.core.Either
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.FuelManager
+import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
@@ -112,19 +113,18 @@ class RobotAdvisorControllerFeatureComplete {
     }
 
     private fun balancePortfolio(jsonPayload: String): Either<Exception, Pair<Response, Result<String, FuelError>>> {
-        val httpPost = "/rebalance".httpPost().body(jsonPayload, Charsets.UTF_8).header("Content-Type" to "application/json")
-        try {
-            val (_, response, result) = httpPost.responseString()
-            return Either.right(Pair(response, result))
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return Either.left(e)
-        }
-
+        val request = post("/rebalance", jsonPayload)
+        return processRequest(request)
     }
 
     private fun contributeToPortfolio(jsonPayload: String): Either<Exception, Pair<Response, Result<String, FuelError>>> {
-        val httpPost = "/contribute".httpPost().body(jsonPayload, Charsets.UTF_8).header("Content-Type" to "application/json")
+        val request = post("/contribute", jsonPayload)
+        return processRequest(request)
+    }
+
+    private fun post(url: String, jsonPayload: String) = url.httpPost().body(jsonPayload, Charsets.UTF_8).header("Content-Type" to "application/json")
+
+    private fun processRequest(httpPost: Request): Either<Exception, Pair<Response, Result<String, FuelError>>> {
         try {
             val (_, response, result) = httpPost.responseString()
             return Either.right(Pair(response, result))
@@ -132,7 +132,6 @@ class RobotAdvisorControllerFeatureComplete {
             e.printStackTrace()
             return Either.left(e)
         }
-
     }
 
     private fun serialize(request: Any): String {
