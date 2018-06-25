@@ -16,18 +16,6 @@ class FixedStrategyContributeShould {
     }
 
     @Test
-    fun `not contribute to a portfolio that has no cash available - repeated allocation cases)`() {
-        val ideal = AssetAllocation.aNew(listOf(
-                fundAsset("LU1", "0.5"),
-                fundAsset("LU1", "0.5")
-        )).get()
-
-        val contributions = strategy.contribute(cash(0), ideal)
-
-        assertThat(contributions).isEqualTo(Operations(listOf()))
-    }
-
-    @Test
     fun `contribute to a portfolio with several assets -- order does matter (the order of the results is the order of the input)`() {
         val ideal = AssetAllocation.aNew(listOf(
                 fundAsset("LU1", "0.6"),

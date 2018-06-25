@@ -17,24 +17,7 @@ class FixedStrategyRebalancingShould {
     }
 
     @Test
-    fun `not rebalance a portfolio that is correct already, with several assets - repeated allocation cases)`() {
-        val ideal = AssetAllocation.aNew(listOf(
-                AssetAllocationSingle(ISIN("LU1"), Percentage("0.5")),
-                AssetAllocationSingle(ISIN("LU1"), Percentage("0.5"))
-        )).get()
-        val current = Portfolio(listOf(
-                fund("LU1", "50"),
-                fund("LU1", "50"),
-                fund("LU1", "50")
-        ))
-
-        val rebalance = strategy.rebalance(ideal, current)
-
-        assertThat(rebalance).isEqualTo(operations())
-    }
-
-    @Test
-    fun `not rebalance a portfolio that is correct already, with several assets - no repeated allocation cases`() {
+    fun `not rebalance a portfolio that is correct already, with several assets`() {
         val isinValue = "LU1"
         val ideal = AssetAllocation.aNew(listOf(
                 AssetAllocationSingle(ISIN(isinValue), Percentage("1"))
