@@ -2,16 +2,22 @@ package com.gmaur.investment.robotadvisor.domain
 
 import arrow.core.Either
 import java.util.*
+import kotlin.collections.HashSet
 
 data class AssetAllocation private constructor(val values: List<AssetAllocationSingle>) {
     companion object {
         fun aNew(values: List<AssetAllocationSingle>): Either<Exception, AssetAllocation> {
-            val totalPercentage = sum(values)
-            if (totalPercentage.greaterThan(Percentage("1"))) {
+            if (sum(values).greaterThan(Percentage("1"))) {
                 return Either.left(InvalidInvariant("Asset Allocation percentage exceeds 100%"))
-            } else {
-                return Either.right(AssetAllocation(values))
+            } else if (`containsRepeatedElements?`(values)) {
+                return Either.left(InvalidInvariant("Asset Allocation cannot contain repeated elements"))
             }
+            return Either.right(AssetAllocation(values))
+        }
+
+        private fun `containsRepeatedElements?`(values: List<AssetAllocationSingle>): Boolean {
+            val isins = values.map { it.isin }
+            return HashSet(isins).size != isins.size
         }
 
         private fun sum(values: List<AssetAllocationSingle>): Percentage {

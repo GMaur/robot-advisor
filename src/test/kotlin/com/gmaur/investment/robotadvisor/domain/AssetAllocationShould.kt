@@ -11,4 +11,10 @@ class AssetAllocationShould {
         val `another element` = AssetAllocationSingle(ISIN("LU1"), percentage = Percentage("0.2"))
         assertThat(AssetAllocation.aNew(listOf(`element at 100%`, `another element`))).isEqualTo(Either.left(InvalidInvariant("Asset Allocation percentage exceeds 100%")))
     }
+
+    @Test
+    fun `cannot repeat elements in the AssetAllocation`() {
+        val result = AssetAllocation.aNew(listOf(AssetAllocationSingle(ISIN("LU1"), percentage = Percentage("0.2")), AssetAllocationSingle(ISIN("LU1"), percentage = Percentage("0.2"))))
+        assertThat(result.isLeft()).isTrue()
+    }
 }
