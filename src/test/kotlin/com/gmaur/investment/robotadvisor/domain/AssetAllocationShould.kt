@@ -2,7 +2,7 @@ package com.gmaur.investment.robotadvisor.domain
 
 import arrow.core.Either
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class AssetAllocationShould {
     @Test

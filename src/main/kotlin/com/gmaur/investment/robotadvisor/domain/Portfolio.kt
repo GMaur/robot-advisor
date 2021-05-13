@@ -11,9 +11,8 @@ data class Portfolio<out T : Asset>(val assets: List<T>) {
         return assets
                 .map(Asset::amount)
                 .fold(
-                        Amount.EUR("0"),
-                        { amount, other -> amount.add(other) }
-                )
+                        Amount.EUR("0")
+                ) { amount, other -> amount.add(other) }
     }
 
     fun groupBy(): GroupedAmounts {

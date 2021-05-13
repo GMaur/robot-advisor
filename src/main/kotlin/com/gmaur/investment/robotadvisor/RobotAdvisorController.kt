@@ -20,8 +20,8 @@ class RobotAdvisorController(private val rebalancingStrategy: RebalancingStrateg
     fun rebalance(@RequestBody rebalanceRequest: RebalanceRequest): Any {
         val requestOrFailure = Rebalance.parse(rebalanceRequest)
         val result = requestOrFailure.bimap(
-                { it -> throw IllegalArgumentException(it[0].message) },
-                { it -> Rebalance(it.current, it.ideal) })
+                { throw IllegalArgumentException(it[0].message) },
+                { Rebalance(it.current, it.ideal) })
                 .toOption()
                 .map { rebalance ->
                     rebalance.current.rebalance(rebalancingStrategy, rebalance.ideal)

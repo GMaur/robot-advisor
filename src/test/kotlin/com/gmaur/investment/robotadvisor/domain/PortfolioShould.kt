@@ -2,7 +2,7 @@ package com.gmaur.investment.robotadvisor.domain
 
 import com.gmaur.investment.robotadvisor.domain.AssetObjectMother.Companion.cash
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 
 class PortfolioShould {

@@ -3,7 +3,7 @@ package com.gmaur.investment.robotadvisor.infrastructure
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.SoftAssertions
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 
 class OperationDeserializerShould {

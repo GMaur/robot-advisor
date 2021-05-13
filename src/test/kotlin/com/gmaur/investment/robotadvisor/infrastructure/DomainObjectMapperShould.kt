@@ -2,7 +2,7 @@ package com.gmaur.investment.robotadvisor.infrastructure
 
 import com.gmaur.investment.robotadvisor.domain.*
 import org.assertj.core.api.SoftAssertions
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 
 class DomainObjectMapperShould {

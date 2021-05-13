@@ -7,7 +7,7 @@ import com.gmaur.investment.robotadvisor.infrastructure.DomainObjectMapper
 import com.gmaur.investment.robotadvisor.infrastructure.JSONMapper
 import com.gmaur.investment.robotadvisor.infrastructure.PortfolioDTO
 import org.assertj.core.api.Assertions
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class R4AutomatorFormatDeserializerTest {
     private val mapper = JSONMapper.aNew()
