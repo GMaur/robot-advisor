@@ -2,7 +2,7 @@ package com.gmaur.investment.robotadvisor.infrastructure
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class JSONMapperTest {
     @Test

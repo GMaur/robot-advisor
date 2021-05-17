@@ -21,9 +21,9 @@ data class AssetAllocation private constructor(val values: List<AssetAllocationS
         }
 
         private fun sum(values: List<AssetAllocationSingle>): Percentage {
-            return values.foldRight(Percentage("0"), { a, b ->
+            return values.foldRight(Percentage("0")) { a, b ->
                 a.percentage.add(b)
-            })
+            }
         }
     }
 

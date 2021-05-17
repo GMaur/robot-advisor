@@ -12,16 +12,16 @@ import com.gmaur.investment.robotadvisor.RobotAdvisorControllerFeatureComplete.R
 import com.gmaur.investment.robotadvisor.infrastructure.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit4.SpringRunner
+import org.springframework.test.context.junit.jupiter.SpringExtension
 
-@RunWith(SpringRunner::class)
+@ExtendWith(SpringExtension::class)
 @ContextConfiguration(classes = [RobotAdvisorController::class, RealPortfolioRebalancer::class, AppConfiguration::class])
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class RobotAdvisorControllerFeatureComplete {
@@ -30,7 +30,7 @@ class RobotAdvisorControllerFeatureComplete {
 
     private val objectMapper: ObjectMapper = JSONMapper.aNew()
 
-    @Before
+    @BeforeEach
     fun setUp() {
         FuelManager.instance.basePath = "http://localhost:" + port!!
     }
@@ -49,12 +49,12 @@ class RobotAdvisorControllerFeatureComplete {
 
         println(jsonPayload)
 
-        val response = balancePortfolio(jsonPayload)
+        val response: Either<Exception /* = java.lang.Exception */, Pair<Response, Result<String, FuelError>>> = balancePortfolio(jsonPayload)
 
         assertThat(response.isRight())
         response.bimap(
                 {
-                    fail("expected a right")
+                    fail<java.lang.Exception>("expected a right")
                 },
                 { (response, result) ->
                     assertThat(response.statusCode).isEqualTo(200)
@@ -89,7 +89,7 @@ class RobotAdvisorControllerFeatureComplete {
         assertThat(response.isRight())
         response.bimap(
                 {
-                    fail("expected a right")
+                    fail<java.lang.Exception>("expected a right")
                 },
                 { (response, result) ->
                     assertThat(response.statusCode).isEqualTo(200)

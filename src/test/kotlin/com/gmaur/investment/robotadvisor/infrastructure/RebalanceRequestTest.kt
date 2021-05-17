@@ -1,7 +1,7 @@
 package com.gmaur.investment.robotadvisor.infrastructure
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class RebalanceRequestTest {
     @Test

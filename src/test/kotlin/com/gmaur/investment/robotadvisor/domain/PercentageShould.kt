@@ -1,7 +1,7 @@
 package com.gmaur.investment.robotadvisor.domain
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class PercentageShould {
     @Test

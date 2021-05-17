@@ -13,19 +13,19 @@ import com.gmaur.investment.robotadvisor.domain.FixedRebalanceStrategy
 import com.gmaur.investment.robotadvisor.domain.RebalancingStrategy
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
 import org.mockito.Mockito
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
-import org.springframework.test.context.junit4.SpringRunner
 
-@RunWith(SpringRunner::class)
+@ExtendWith(SpringExtension::class)
 @Import(value = [RobotAdvisorController::class, FakeConfiguration::class])
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class RobotAdvisorControllerFeatureMocked {
@@ -35,7 +35,7 @@ class RobotAdvisorControllerFeatureMocked {
     @Autowired
     private lateinit var contributeStrategy: ContributeStrategy
 
-    @Before
+    @BeforeEach
     fun setUp() {
         FuelManager.instance.basePath = "http://localhost:" + port!!
     }
@@ -50,15 +50,16 @@ class RobotAdvisorControllerFeatureMocked {
         val result = balancePortfolio(jsonPayload)
 
 
-        assertThat(result.isRight()).isTrue()
+        assertThat(result.isRight()).isTrue
         result.bimap(
-                { fail("should be a right") },
+                { fail<Exception>("should be a right") },
                 { (response, result) ->
                     assertThat(response.statusCode).isEqualTo(400)
                     when (result) {
                         is Result.Success -> {
-                            fail("should be a failure")
+                            fail<Exception>("should be a failure")
                         }
+                        else -> true
                     }
                 })
         Mockito.verifyZeroInteractions(contributeStrategy)
