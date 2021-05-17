@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -euo pipefail
+
+verify_git_email_config.sh "alvarogarcia7@users.noreply.github.com"
+make clean test
+

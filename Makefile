@@ -1,5 +1,15 @@
 MAKEFLAGS += --silent
 
+install:
+	$(MAKE) install_githooks
+.PHONY: install
+
+install_githooks:
+	chmod +x ./githooks/*
+	cp ./githooks/* .git/hooks/
+.PHONY: install_githooks
+
+
 .PHONY: build
 build:
 	./mvnw package
